@@ -1,0 +1,8 @@
+.gradle/
+.idea/
+*.iml
+/.idea/
+.idea/*
+/.idea/*
+/build
+/eqgbot.log
