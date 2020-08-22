@@ -38,7 +38,13 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
             }
 
             final Group group = groupMap.get(event.getGroupId());
-            var user = EVEUser.newInstance(event.getFromId(), group.getServer());
+            EVEUser user;
+            if (group.getServer() == GameServer.GF) {
+                user = EVEUser.newInstanceFromGF(event.getFromId(), 562593865);
+            } else {
+                user = EVEUser.newInstanceFromOF(event.getFromId());
+            }
+
             if (user != null) {
                 if (group.getServer() == GameServer.GF && !user.getAllianceName().equals("VENI VIDI VICI")) {
                     event.reject(false, "查询不到QQ绑定记录");

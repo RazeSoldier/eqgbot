@@ -65,25 +65,44 @@ public class EVEUser {
         return new EVEUser(id, name, corpName, allianceName, uId);
     }
 
-    @Nullable
     public static EVEUser newInstanceFromGF(long id) throws SQLExecuteException {
+        return newInstanceFromGF(id, null);
+    }
+
+    @Nullable
+    public static EVEUser newInstanceFromGF(long id, Integer allianceIdFilter) throws SQLExecuteException {
         try (Connection conn = getConnection(GameServer.GF)) {
-            int uId;
-            String name;
+            int uId = 0;
+            String name = null;
             String corpName;
             String allianceName = null;
-            int corpId;
-            int allianceId;
+            int corpId = 0;
+            int allianceId = 0;
             {
                 var sql = "select characters.id,characters.name,characters.corporation_id,characters.alliance_id " +
                         "from qqs,users,characters " +
                         "where qqs.user_id=users.id and users.id=characters.id and qqs.qq_id=" + id;
-                var set = queryFirst(conn, sql);
-                if (set == null) return null;
-                uId = set.getInt("id");
-                name = set.getString("name");
-                corpId = set.getInt("corporation_id");
-                allianceId = set.getInt("alliance_id");
+                if (allianceIdFilter == null) {
+                    var set = queryFirst(conn, sql);
+                    if (set == null) return null;
+                    uId = set.getInt("id");
+                    name = set.getString("name");
+                    corpId = set.getInt("corporation_id");
+                    allianceId = set.getInt("alliance_id");
+                } else {
+                    var set = DatabaseAccessHolding.executeQuery(conn, sql);
+                    while (set.next()) {
+                        if (set.getInt("alliance_id") == allianceIdFilter) {
+                            uId = set.getInt("id");
+                            name = set.getString("name");
+                            corpId = set.getInt("corporation_id");
+                            allianceId = set.getInt("alliance_id");
+                        }
+                    }
+                    if (uId == 0 || name == null || corpId == 0) {
+                        return null;
+                    }
+                }
             }
             {
                 ResultSet set = queryFirst(conn, "select name from corporations where id=" + corpId);
