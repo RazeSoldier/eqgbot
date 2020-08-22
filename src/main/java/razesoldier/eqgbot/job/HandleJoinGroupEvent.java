@@ -40,6 +40,10 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
             final Group group = groupMap.get(event.getGroupId());
             var user = EVEUser.newInstance(event.getFromId(), group.getServer());
             if (user != null) {
+                if (group.getServer() == GameServer.GF && !user.getAllianceName().equals("VENI VIDI VICI")) {
+                    event.reject(false, "查询不到QQ绑定记录");
+                    return;
+                }
                 event.accept(); // 接受请求
                 // 并发送“军团-角色名”到群聊
                 if (group.getServer() == GameServer.OF) {
