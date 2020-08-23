@@ -37,12 +37,13 @@ class CronKickInvalidMember extends FeatureBase {
                 0, 1, TimeUnit.DAYS, new CheckUser(bot, logger, 920169144, 1509251138) {
                     @Override
                     protected String getQuerySQl() {
-                        return "select qqs.qq_id from users,qqs where qqs.user_id=users.id";
+                        return "select qqs.qq_id,characters.alliance_id from users,qqs,characters " +
+                                "where qqs.user_id=users.id and users.id=characters.id and characters.alliance_id=562593865";
                     }
 
                     @Override
                     protected void each(List<Long> qqList, ResultSet resultSet) throws SQLException {
-                        qqList.add(resultSet.getLong("id"));
+                        qqList.add(resultSet.getLong("qq_id"));
                     }
 
                     @Override
