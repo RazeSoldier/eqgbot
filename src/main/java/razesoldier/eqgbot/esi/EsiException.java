@@ -13,4 +13,8 @@ public class EsiException extends Exception {
     public EsiException(String msg) {
         super(msg);
     }
+
+    public EsiException(Throwable cause) {
+        super(cause);
+    }
 }

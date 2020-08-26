@@ -18,7 +18,7 @@ class EsiClientImp implements EsiClient {
         try {
             return new StatusApi().getStatus(null, null);
         } catch (ApiException e) {
-            throw new EsiException(e.getResponseBody());
+            throw new EsiException(e);
         }
     }
 }
