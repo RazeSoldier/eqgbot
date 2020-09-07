@@ -13,6 +13,7 @@ import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
+import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.EVEUser;
 import razesoldier.eqgbot.GameServer;
@@ -24,25 +25,30 @@ import razesoldier.eqgbot.GroupMap;
  */
 public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
     private final GroupMap groupMap;
+    private final MiraiLogger logger;
 
-    public HandleJoinGroupEvent(GroupMap groupMap) {
+    public HandleJoinGroupEvent(GroupMap groupMap, MiraiLogger logger) {
         this.groupMap = groupMap;
+        this.logger = logger;
     }
 
     @EventHandler
     public void onRequestJoinGroup(MemberJoinRequestEvent event) throws Exception {
         try {
             // 判断接受到的事件是要监听的群
-            if (!groupMap.hasGroup(event.getGroupId())) {
+            final var groupId = event.getGroupId();
+            if (!groupMap.hasGroup(groupId)) {
                 return;
             }
 
-            final Group group = groupMap.get(event.getGroupId());
+            final Group group = groupMap.get(groupId);
+            final var fromId = event.getFromId();
+            logger.info(groupId + ": 接受到" + fromId + "的入群请求");
             EVEUser user;
             if (group.getServer() == GameServer.GF) {
-                user = EVEUser.newInstanceFromGF(event.getFromId(), 562593865);
+                user = EVEUser.newInstanceFromGF(fromId, 562593865);
             } else {
-                user = EVEUser.newInstanceFromOF(event.getFromId());
+                user = EVEUser.newInstanceFromOF(fromId);
             }
 
             if (user != null) {
@@ -51,6 +57,7 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
                     return;
                 }
                 event.accept(); // 接受请求
+                logger.info(groupId + ": 接受" + fromId + "的入群请求");
                 // 并发送“军团-角色名”到群聊
                 if (group.getServer() == GameServer.OF) {
                     event.getGroup().sendMessage(user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");

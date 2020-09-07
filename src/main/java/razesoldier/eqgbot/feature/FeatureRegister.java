@@ -50,7 +50,7 @@ public class FeatureRegister {
     private void initFeature(@NotNull Class<? extends Feature> featureClass) {
         final var canonicalName = featureClass.getCanonicalName();
         if (canonicalName.equals(ListenJoinGroupRequest.class.getCanonicalName())) {
-            var obj = new ListenJoinGroupRequest(bot, groupMap);
+            var obj = new ListenJoinGroupRequest(bot, groupMap, logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
