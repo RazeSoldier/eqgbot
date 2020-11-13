@@ -12,6 +12,7 @@ package razesoldier.eqgbot.feature;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
+import razesoldier.eqgbot.Config;
 import razesoldier.eqgbot.GroupMap;
 
 import java.util.ArrayList;
@@ -23,17 +24,20 @@ public class FeatureRegister {
             "listenJoinGroupRequest", ListenJoinGroupRequest.class,
             "listenGroupMessage", ListenGroupMessage.class,
             "cronKickInvalidMember", CronKickInvalidMember.class,
-            "listenSrpRightRequest", ListenSrpRightRequest.class
+            "listenSrpRightRequest", ListenSrpRightRequest.class,
+            "sovAlert", SovAlert.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
     private final GroupMap groupMap;
     private final MiraiLogger logger;
+    private final Config config;
 
-    public FeatureRegister(Bot bot, GroupMap groupMap, MiraiLogger logger) {
+    public FeatureRegister(Bot bot, GroupMap groupMap, MiraiLogger logger, Config config) {
         this.bot = bot;
         this.groupMap = groupMap;
         this.logger = logger;
+        this.config = config;
     }
 
     public void register() {
@@ -69,6 +73,12 @@ public class FeatureRegister {
         }
         if (canonicalName.equals(ListenSrpRightRequest.class.getCanonicalName())) {
             var obj = new ListenSrpRightRequest(bot, logger);
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+            return;
+        }
+        if (canonicalName.equals(SovAlert.class.getCanonicalName())) {
+            var obj = new SovAlert(bot, logger, config.getSovAlertGroup());
             obj.setEnabled(true);
             featureQueue.add(obj);
         }

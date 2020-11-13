@@ -51,7 +51,7 @@ class Bot {
         groupMap.put(new Group(876472453, GameServer.OF));
         groupMap.put(new Group(920169144, GameServer.GF));
 
-        FeatureRegister featureRegister = new FeatureRegister(bot, groupMap, logger);
+        FeatureRegister featureRegister = new FeatureRegister(bot, groupMap, logger, config);
         config.getFeatures().forEach(featureRegister::enable);
 
         bot.login();

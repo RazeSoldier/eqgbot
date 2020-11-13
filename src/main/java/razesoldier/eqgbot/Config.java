@@ -17,6 +17,7 @@ public class Config {
     private DatabaseConfig gfDatabaseConfig = new DatabaseConfig();
     private DatabaseConfig ofDatabaseConfig = new DatabaseConfig();
     private QQAccount account = new QQAccount();
+    private int sovAlertGroup;
 
     public List<String> getFeatures() {
         return features;
@@ -48,6 +49,14 @@ public class Config {
 
     public void setAccount(QQAccount account) {
         this.account = account;
+    }
+
+    public void setSovAlertGroup(int sovAlertGroup) {
+        this.sovAlertGroup = sovAlertGroup;
+    }
+
+    public int getSovAlertGroup() {
+        return sovAlertGroup;
     }
 
     public static class DatabaseConfig {

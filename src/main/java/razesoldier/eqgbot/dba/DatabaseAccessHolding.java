@@ -11,6 +11,7 @@ package razesoldier.eqgbot.dba;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import com.mysql.cj.jdbc.MysqlDataSourceFactory;
+import org.apache.commons.lang3.time.TimeZones;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.Config;
 import razesoldier.eqgbot.GameServer;
@@ -46,6 +47,7 @@ public class DatabaseAccessHolding {
         gfConfigRef.add(new StringRefAddr("databaseName", gfConfig.getDatabaseName()));
         gfConfigRef.add(new StringRefAddr("user", gfConfig.getUser()));
         gfConfigRef.add(new StringRefAddr("password", gfConfig.getPassword()));
+        gfConfigRef.add(new StringRefAddr("serverTimezone", TimeZones.GMT_ID));
         dataSources[GameServer.GF.getI()] = (MysqlDataSource) new MysqlDataSourceFactory()
                 .getObjectInstance(gfConfigRef, null, null, null);
     }
