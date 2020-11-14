@@ -53,6 +53,7 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
 
             if (user != null) {
                 if (group.getServer() == GameServer.GF && !user.getAllianceName().equals("VENI VIDI VICI")) {
+                    logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:角色不在主联盟");
                     event.reject(false, "查询不到QQ绑定记录");
                     return;
                 }
@@ -66,6 +67,7 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
                             user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");
                 }
             } else {
+                logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:查询不到QQ绑定记录");
                 event.reject(false, "查询不到QQ绑定记录");
             }
         } catch (Exception e) {
