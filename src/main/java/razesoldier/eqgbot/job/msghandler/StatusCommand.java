@@ -30,7 +30,7 @@ class StatusCommand implements MessageHandler {
         try {
             resp = getServerStatus();
         } catch (EsiException e) {
-            event.getGroup().sendMessage(e.getMessage());
+            event.getGroup().sendMessage("无法连接ESI服务，可能是因为服务器正在维护");
             return;
         }
         String startTime = resp.getStartTime().atZoneSameInstant(ZoneId.of("+8")).format(DateTimeFormatter.ISO_LOCAL_TIME);
