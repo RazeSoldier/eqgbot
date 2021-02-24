@@ -28,6 +28,7 @@ dependencies {
 
 application {
     mainClassName = 'razesoldier.eqgbot.Entry'
+    applicationDefaultJvmArgs = ['-Xms128m', '-Xmx128m']
 }
 
 test {
