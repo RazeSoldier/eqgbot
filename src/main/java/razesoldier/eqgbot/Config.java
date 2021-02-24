@@ -18,6 +18,7 @@ public class Config {
     private DatabaseConfig ofDatabaseConfig = new DatabaseConfig();
     private QQAccount account = new QQAccount();
     private int sovAlertGroup;
+    private int badCharacterNoticeGroup;
 
     public List<String> getFeatures() {
         return features;
@@ -57,6 +58,14 @@ public class Config {
 
     public int getSovAlertGroup() {
         return sovAlertGroup;
+    }
+
+    public int getBadCharacterNoticeGroup() {
+        return badCharacterNoticeGroup;
+    }
+
+    public void setBadCharacterNoticeGroup(int badCharacterNoticeGroup) {
+        this.badCharacterNoticeGroup = badCharacterNoticeGroup;
     }
 
     public static class DatabaseConfig {

@@ -25,7 +25,8 @@ public class FeatureRegister {
             "listenGroupMessage", ListenGroupMessage.class,
             "cronKickInvalidMember", CronKickInvalidMember.class,
             "listenSrpRightRequest", ListenSrpRightRequest.class,
-            "sovAlert", SovAlert.class
+            "sovAlert", SovAlert.class,
+            "-10tracking", BadCharacterTracking.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -52,35 +53,44 @@ public class FeatureRegister {
     }
 
     private void initFeature(@NotNull Class<? extends Feature> featureClass) {
-        final var canonicalName = featureClass.getCanonicalName();
-        if (canonicalName.equals(ListenJoinGroupRequest.class.getCanonicalName())) {
+        if (classEquals(featureClass, ListenJoinGroupRequest.class)) {
             var obj = new ListenJoinGroupRequest(bot, groupMap, logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
         }
-        if (canonicalName.equals(ListenGroupMessage.class.getCanonicalName())) {
+        if (classEquals(featureClass, ListenGroupMessage.class)) {
             var obj = new ListenGroupMessage(bot);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
         }
-        if (canonicalName.equals(CronKickInvalidMember.class.getCanonicalName())) {
+        if (classEquals(featureClass, CronKickInvalidMember.class)) {
             var obj = new CronKickInvalidMember(bot, logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
         }
-        if (canonicalName.equals(ListenSrpRightRequest.class.getCanonicalName())) {
+        if (classEquals(featureClass, ListenSrpRightRequest.class)) {
             var obj = new ListenSrpRightRequest(bot, logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
         }
-        if (canonicalName.equals(SovAlert.class.getCanonicalName())) {
+        if (classEquals(featureClass, SovAlert.class)) {
             var obj = new SovAlert(bot, logger, config.getSovAlertGroup());
             obj.setEnabled(true);
             featureQueue.add(obj);
+            return;
         }
+        if (classEquals(featureClass, BadCharacterTracking.class)) {
+            var obj = new BadCharacterTracking(bot, logger, config.getBadCharacterNoticeGroup());
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+        }
+    }
+
+    private boolean classEquals(@NotNull Class<? extends Feature> a, @NotNull Class<? extends Feature> b) {
+        return a.getCanonicalName().equals(b.getCanonicalName());
     }
 }
