@@ -19,8 +19,11 @@ import java.util.Map;
 public class MessageHandlerFactory {
     private final GroupMessageEvent event;
     private static final Map<String, Class<? extends MessageHandler>> commandMap = Map.of(
-            ".me", MeCommand.class, ".pap", PapCommand.class, ".status", StatusCommand.class,
-            ".help", HelpCommand.class
+            ".me", MeCommand.class,
+            ".pap", PapCommand.class,
+            ".status", StatusCommand.class,
+            ".help", HelpCommand.class,
+            ".gittime", GitTimeCommand.class
     );
 
     private MessageHandlerFactory(GroupMessageEvent event) {
