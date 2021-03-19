@@ -16,8 +16,8 @@ class GitTimeCommand implements MessageHandler {
     public void handle() throws Exception {
         //输入：.gittime ddhhmm
         //返回：yyyy-mm-dd hh:mm:ss
-        try{
-            Date d=new Date();
+        try {
+            Date d = new Date();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
             final var sender = event.getSender();
             final var msg= event.getMessage().contentToString();
@@ -33,7 +33,7 @@ class GitTimeCommand implements MessageHandler {
             event.getGroup().sendMessage(
                     new At(sender).plus(text)
             );
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
