@@ -20,6 +20,9 @@ class HelpCommand implements MessageHandler {
 
     @Override
     public void handle() throws Exception {
-        event.getGroup().sendMessage(".status -- 显示游戏服务器状态\n" + ".me -- 显示我的角色名\n" + ".help -- 本帮助");
+        event.getGroup().sendMessage(".status -- 显示游戏服务器状态\n" +
+                                     ".me -- 显示我的角色名\n" +
+                                     ".help -- 本帮助\n" +
+                                     ".gittime ddhhmm -- 计算增强时间");
     }
 }
