@@ -25,10 +25,10 @@ class GitTimeCommand implements MessageHandler {
             int hh = Integer.parseInt(msg.substring(11,12));
             int mm = Integer.parseInt(msg.substring(13,14));
             String text = df.format(new Date(d.getTime() + 8 * 60 * 60 * 1000L//+8时区
-                            + dd * 24 * 60 * 60 * 1000L//加上增强时间天数
-                            + hh * 60 * 60 * 1000L//加上增强时间小时数
-                            + mm * 60 * 1000L//加上增强时间分钟数
-                    )
+                                                         + dd * 24 * 60 * 60 * 1000L//加上增强时间天数
+                                                         + hh * 60 * 60 * 1000L//加上增强时间小时数
+                                                         + mm * 60 * 1000L//加上增强时间分钟数
+                                            )
             );
             event.getGroup().sendMessage(
                     new At(sender).plus(text)

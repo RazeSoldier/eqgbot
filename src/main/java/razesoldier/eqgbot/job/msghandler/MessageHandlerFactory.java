@@ -43,7 +43,7 @@ public class MessageHandlerFactory {
     public MessageHandler make(@NotNull String command) throws UnknownCommandException {
         Class<? extends MessageHandler> className = null;
         //有参数
-        if(command.indexOf(" ") == 1) {
+        if(command.contains(" ")) {
             String[] commandArray = command.split(" ");
             className = commandMap_p.get(commandArray[0]);
             if (className == null) {
@@ -51,7 +51,7 @@ public class MessageHandlerFactory {
             }
         }
         //无参数
-        if(command.indexOf(" ") == -1) {
+        else{
             className = commandMap.get(command);
             if (className == null) {
                 throw new UnknownCommandException(command);
