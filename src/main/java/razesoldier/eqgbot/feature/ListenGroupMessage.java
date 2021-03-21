@@ -23,5 +23,6 @@ class ListenGroupMessage extends FeatureBase {
     @Override
     void handle() {
         Events.registerEvents(bot, new HandleGroupMessageEvent(1043885399));
+        Events.registerEvents(bot, new HandleGroupMessageEvent(906952212));
     }
 }
