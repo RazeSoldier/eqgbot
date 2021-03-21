@@ -19,9 +19,15 @@ import java.util.Map;
 public class MessageHandlerFactory {
     private final GroupMessageEvent event;
     private static final Map<String, Class<? extends MessageHandler>> commandMap = Map.of(
-            ".me", MeCommand.class, ".pap", PapCommand.class, ".status", StatusCommand.class,
+            ".me", MeCommand.class,
+            ".pap", PapCommand.class,
+            ".status", StatusCommand.class,
             ".help", HelpCommand.class
-    );
+    );//无参数
+
+    private static final Map<String, Class<? extends MessageHandler>> commandMap_p = Map.of(
+            ".gittime", GitTimeCommand.class
+    );//有参数
 
     private MessageHandlerFactory(GroupMessageEvent event) {
         this.event = event;
@@ -35,9 +41,21 @@ public class MessageHandlerFactory {
 
     @NotNull
     public MessageHandler make(@NotNull String command) throws UnknownCommandException {
-        Class<? extends MessageHandler> className = commandMap.get(command);
-        if (className == null) {
-            throw new UnknownCommandException(command);
+        Class<? extends MessageHandler> className = null;
+        //有参数
+        if(command.contains(" ")) {
+            String[] commandArray = command.split(" ");
+            className = commandMap_p.get(commandArray[0]);
+            if (className == null) {
+                throw new UnknownCommandException(commandArray[0]);
+            }
+        }
+        //无参数
+        else{
+            className = commandMap.get(command);
+            if (className == null) {
+                throw new UnknownCommandException(command);
+            }
         }
 
         try {
