@@ -21,9 +21,9 @@ class GitTimeCommand implements MessageHandler {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
             final var sender = event.getSender();
             final var msg= event.getMessage().contentToString();
-            int dd = Integer.parseInt(msg.substring(9,10));
-            int hh = Integer.parseInt(msg.substring(11,12));
-            int mm = Integer.parseInt(msg.substring(13,14));
+            int dd = Integer.parseInt(msg.substring(9,11));
+            int hh = Integer.parseInt(msg.substring(11,13));
+            int mm = Integer.parseInt(msg.substring(13,15));
             String text = df.format(new Date(d.getTime() + 8 * 60 * 60 * 1000L//+8时区
                                                          + dd * 24 * 60 * 60 * 1000L//加上增强时间天数
                                                          + hh * 60 * 60 * 1000L//加上增强时间小时数
