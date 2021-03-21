@@ -17,21 +17,21 @@ import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.job.msghandler.MessageHandlerFactory;
 import razesoldier.eqgbot.job.msghandler.UnknownCommandException;
 
-public class HandleGroupMessageEvent extends SimpleListenerHost implements Job {
-    private final long groupId;
+import java.util.List;
 
-    /**
-     * @param groupId 要监听的Q群号
-     */
-    public HandleGroupMessageEvent(long groupId) {
-        this.groupId = groupId;
+public class HandleGroupMessageEvent extends SimpleListenerHost implements Job {
+    private final List<Long> qqGroupList;
+
+    public HandleGroupMessageEvent(List<Long> qqGroupList) {
+        this.qqGroupList = qqGroupList;
     }
 
     @EventHandler
-    public void handleGroupMessage(GroupMessageEvent event) {
-        if (event.getGroup().getId() != groupId) {
+    public void handleGroupMessage(@NotNull GroupMessageEvent event) {
+        if (!qqGroupList.contains(event.getGroup().getId())) {
             return;
         }
+
         var msg = event.getMessage().contentToString();
         if (msg.charAt(0) != '.') {
             return;

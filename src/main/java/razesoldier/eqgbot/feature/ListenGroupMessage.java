@@ -13,6 +13,8 @@ import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.Events;
 import razesoldier.eqgbot.job.HandleGroupMessageEvent;
 
+import java.util.List;
+
 class ListenGroupMessage extends FeatureBase {
     private final Bot bot;
 
@@ -22,7 +24,6 @@ class ListenGroupMessage extends FeatureBase {
 
     @Override
     void handle() {
-        Events.registerEvents(bot, new HandleGroupMessageEvent(1043885399));
-        Events.registerEvents(bot, new HandleGroupMessageEvent(906952212));
+        Events.registerEvents(bot, new HandleGroupMessageEvent(List.of((long)1043885399, (long)906952212, (long)133052897)));
     }
 }
