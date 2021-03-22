@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'razesoldier'
-version '1.1.4'
+version '1.1.5'
 
 sourceCompatibility = JavaVersion.VERSION_15
 targetCompatibility = JavaVersion.VERSION_15
