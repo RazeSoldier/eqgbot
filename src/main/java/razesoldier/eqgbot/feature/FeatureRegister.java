@@ -24,7 +24,6 @@ public class FeatureRegister {
             "listenJoinGroupRequest", ListenJoinGroupRequest.class,
             "listenGroupMessage", ListenGroupMessage.class,
             "cronKickInvalidMember", CronKickInvalidMember.class,
-            "listenSrpRightRequest", ListenSrpRightRequest.class,
             "sovAlert", SovAlert.class,
             "-10tracking", BadCharacterTracking.class
     );
@@ -67,12 +66,6 @@ public class FeatureRegister {
         }
         if (classEquals(featureClass, CronKickInvalidMember.class)) {
             var obj = new CronKickInvalidMember(bot, logger);
-            obj.setEnabled(true);
-            featureQueue.add(obj);
-            return;
-        }
-        if (classEquals(featureClass, ListenSrpRightRequest.class)) {
-            var obj = new ListenSrpRightRequest(bot, logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
