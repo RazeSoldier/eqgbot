@@ -9,7 +9,7 @@
 
 package razesoldier.eqgbot.job.msghandler;
 
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.troja.eve.esi.model.StatusResponse;
 import razesoldier.eqgbot.esi.EsiException;
 import razesoldier.eqgbot.esi.EsiFacade;

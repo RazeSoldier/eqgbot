@@ -66,7 +66,7 @@ public abstract class CheckUser implements Job, CronTask {
             if (kickList.isEmpty()) {
                 return;
             }
-            bot.getFriend(recipientId).sendMessage(getGameServer().toString() + "\n"
+            bot.getFriendOrFail(recipientId).sendMessage(getGameServer().toString() + "\n"
                     + StringUtils.join(kickList, "\n"));
         } catch (Exception throwables) {
             logger.info(throwables.getMessage());

@@ -9,7 +9,7 @@
 
 package razesoldier.eqgbot.job.msghandler;
 
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class MessageHandlerFactory {
 
     @NotNull
     public MessageHandler make(@NotNull String command) throws UnknownCommandException {
-        Class<? extends MessageHandler> className = null;
+        Class<? extends MessageHandler> className;
         //有参数
         if(command.contains(" ")) {
             String[] commandArray = command.split(" ");

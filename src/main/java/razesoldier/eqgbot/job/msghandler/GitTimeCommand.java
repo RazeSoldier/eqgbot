@@ -1,6 +1,6 @@
 package razesoldier.eqgbot.job.msghandler;
 
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ class GitTimeCommand implements MessageHandler {
                     plusTime(now, event.getMessage().contentToString())
             );
             event.getGroup().sendMessage(
-                    new At(sender).plus(reply)
+                    new At(sender.getId()).plus(reply)
             );
         } catch (Exception e) {
             event.getGroup().sendMessage(e.getMessage());

@@ -9,7 +9,7 @@
 
 package razesoldier.eqgbot.job.msghandler;
 
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
 
 class PapCommand implements MessageHandler {
@@ -22,7 +22,7 @@ class PapCommand implements MessageHandler {
     @Override
     public void handle() throws Exception {
         event.getGroup().sendMessage(
-                new At(event.getSender()).plus("暂不支持查询出勤分，请到http://www.eve0nline.com/pap查询")
+                new At(event.getSender().getId()).plus("暂不支持查询出勤分，请到http://www.eve0nline.com/pap查询")
         );
     }
 }

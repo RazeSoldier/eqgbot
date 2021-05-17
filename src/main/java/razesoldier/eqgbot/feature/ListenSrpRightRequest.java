@@ -10,7 +10,6 @@
 package razesoldier.eqgbot.feature;
 
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.MiraiLogger;
 import razesoldier.eqgbot.job.HandleSrpRightRequest;
 
@@ -25,6 +24,6 @@ class ListenSrpRightRequest extends FeatureBase {
 
     @Override
     void handle() {
-        Events.registerEvents(bot, new HandleSrpRightRequest(logger));
+        bot.getEventChannel().registerListenerHost(new HandleSrpRightRequest(logger));
     }
 }

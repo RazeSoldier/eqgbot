@@ -10,7 +10,6 @@
 package razesoldier.eqgbot.feature;
 
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.utils.MiraiLogger;
 import razesoldier.eqgbot.GroupMap;
 import razesoldier.eqgbot.job.HandleJoinGroupEvent;
@@ -28,6 +27,6 @@ class ListenJoinGroupRequest extends FeatureBase {
 
     @Override
     void handle() {
-        Events.registerEvents(bot, new HandleJoinGroupEvent(groupMap, logger));
+        bot.getEventChannel().registerListenerHost(new HandleJoinGroupEvent(groupMap, logger));
     }
 }

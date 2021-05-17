@@ -12,7 +12,7 @@ package razesoldier.eqgbot.job;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.SimpleListenerHost;
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.job.msghandler.MessageHandlerFactory;
 import razesoldier.eqgbot.job.msghandler.UnknownCommandException;

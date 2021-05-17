@@ -9,7 +9,7 @@
 
 package razesoldier.eqgbot.job.msghandler;
 
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 
 class HelpCommand implements MessageHandler {
     private final GroupMessageEvent event;
@@ -20,9 +20,10 @@ class HelpCommand implements MessageHandler {
 
     @Override
     public void handle() throws Exception {
-        event.getGroup().sendMessage(".status -- 显示游戏服务器状态\n" +
-                                     ".me -- 显示我的角色名\n" +
-                                     ".help -- 本帮助\n" +
-                                     ".gittime ddhhmm -- 计算增强时间");
+        event.getGroup().sendMessage("""
+                .status -- 显示游戏服务器状态
+                .me -- 显示我的角色名
+                .help -- 本帮助
+                .gittime ddhhmm -- 计算增强时间""");
     }
 }

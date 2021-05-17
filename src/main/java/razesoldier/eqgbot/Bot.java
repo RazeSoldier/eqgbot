@@ -10,7 +10,7 @@
 package razesoldier.eqgbot;
 
 import com.alibaba.fastjson.JSON;
-import net.mamoe.mirai.BotFactoryJvm;
+import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ class Bot {
 
     public void run() throws IOException {
         final var account = config.getAccount();
-        net.mamoe.mirai.Bot bot = BotFactoryJvm.newBot(account.getId(), account.getPassword(), new BotConfiguration() {
+        net.mamoe.mirai.Bot bot = BotFactory.INSTANCE.newBot(account.getId(), account.getPassword(), new BotConfiguration() {
             {
                 // 将设备信息保存为文件。以便以后登录无须验证。
                 fileBasedDeviceInfo(deviceInfoPath);

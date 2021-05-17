@@ -9,7 +9,7 @@
 
 package razesoldier.eqgbot.job.msghandler;
 
-import net.mamoe.mirai.message.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
 import razesoldier.eqgbot.EVEUser;
 import razesoldier.eqgbot.dba.SQLExecuteException;
@@ -33,7 +33,7 @@ class MeCommand implements MessageHandler {
         }
 
         event.getGroup().sendMessage(
-                new At(sender).plus(text)
+                new At(sender.getId()).plus(text)
         );
     }
 }
