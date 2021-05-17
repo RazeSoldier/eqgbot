@@ -21,7 +21,6 @@ dependencies {
         api("net.mamoe:mirai-core-api:" + miraiVersion) // 编译代码使用
         runtimeOnly("net.mamoe:mirai-core:" + miraiVersion) // 运行时使用
     }
-    compileClasspath('org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32')
     implementation('mysql:mysql-connector-java:8.0.23')
     implementation('com.beust:jcommander:1.78')
     implementation('io.timeandspace:cron-scheduler:0.1') // https://github.com/TimeAndSpaceIO/CronScheduler
