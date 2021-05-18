@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'razesoldier'
-version '2.1'
+version '2.1.1'
 
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
@@ -21,15 +21,15 @@ dependencies {
         api("net.mamoe:mirai-core-api:" + miraiVersion) // 编译代码使用
         runtimeOnly("net.mamoe:mirai-core:" + miraiVersion) // 运行时使用
     }
-    implementation('mysql:mysql-connector-java:8.0.23')
-    implementation('com.beust:jcommander:1.78')
+    implementation('mysql:mysql-connector-java:8.0.25')
+    implementation('com.beust:jcommander:1.81')
     implementation('io.timeandspace:cron-scheduler:0.1') // https://github.com/TimeAndSpaceIO/CronScheduler
-    implementation('org.apache.commons:commons-lang3:3.11')
-    implementation('net.troja.eve:eve-esi:4.3.0')
-    implementation('com.alibaba:fastjson:1.2.75')
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.7.0')
-    testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.7.0')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.7.0')
+    implementation('org.apache.commons:commons-lang3:3.12.0')
+    implementation('net.troja.eve:eve-esi:4.4.0')
+    implementation('com.alibaba:fastjson:1.2.76')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.7.2')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.7.2')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.7.2')
 }
 
 tasks.withType(JavaCompile) {
