@@ -53,7 +53,7 @@ public abstract class CheckUser implements Job, CronTask {
             }
 
             List<Long> kickList = new ArrayList<>();
-            bot.getGroup(groupId).getMembers().forEach(member -> {
+            bot.getGroupOrFail(groupId).getMembers().forEach(member -> {
                 final var id = member.getId();
                 if (!qqList.contains(id)) {
                     if (QQWhiteList.getInstance().has(id)) {

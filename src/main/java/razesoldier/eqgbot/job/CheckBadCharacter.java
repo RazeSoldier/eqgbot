@@ -77,7 +77,7 @@ public class CheckBadCharacter implements Job, CronTask {
 
     private void sendMessage(@NotNull BadCharacter badCharacter) {
         var msg = "==警告==\n" + badCharacter.name + " 已经收入联盟内";
-        bot.getGroup(noticeGroup).sendMessage(msg);
+        bot.getGroupOrFail(noticeGroup).sendMessage(msg);
     }
 
     private static class BadCharacter {

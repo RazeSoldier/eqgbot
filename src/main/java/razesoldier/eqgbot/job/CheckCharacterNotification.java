@@ -102,7 +102,7 @@ public class CheckCharacterNotification implements Job, CronTask {
             };
             // @}
             var msg = String.format("[主权预警] %s的%s正在被入侵", systemName, type);
-            bot.getGroup(groupId).sendMessage(msg);
+            bot.getGroupOrFail(groupId).sendMessage(msg);
         });
     }
 
