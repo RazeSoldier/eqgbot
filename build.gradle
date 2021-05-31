@@ -37,7 +37,7 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    mainClassName = 'razesoldier.eqgbot.Entry'
+    mainClass = 'razesoldier.eqgbot.Entry'
     applicationDefaultJvmArgs = ['-Xms128m', '-Xmx128m']
 }
 
