@@ -43,6 +43,7 @@ class Bot {
             {
                 // 将设备信息保存为文件。以便以后登录无须验证。
                 fileBasedDeviceInfo(deviceInfoPath);
+                setProtocol(MiraiProtocol.ANDROID_PAD);
             }
         });
 
