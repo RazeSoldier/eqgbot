@@ -9,12 +9,14 @@
 
 package razesoldier.eqgbot;
 
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import razesoldier.eqgbot.dba.DatabaseAccessHolding;
 import razesoldier.eqgbot.dba.SQLExecuteException;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -79,18 +81,25 @@ public class EVEUser {
             int corpId = 0;
             int allianceId = 0;
             {
-                var sql = "select characters.id,characters.name,characters.corporation_id,characters.alliance_id " +
-                        "from qqs,users,characters " +
-                        "where qqs.user_id=users.id and users.id=characters.id and qqs.qq_id=" + id;
+                @Language("MySQL") var preSql = """
+                        select characters.id,characters.name,character_affiliations.corporation_id,character_affiliations.alliance_id
+                        from qqs
+                        inner join users on users.id=qqs.user_id
+                        inner join characters on characters.id=users.id
+                        inner join character_affiliations on character_affiliations.character_id=characters.id
+                        where qq_id = ?
+                        """;
+                PreparedStatement stat = conn.prepareStatement(preSql);
+                stat.setLong(1, id);
                 if (allianceIdFilter == null) {
-                    var set = queryFirst(conn, sql);
+                    var set = stat.executeQuery();
                     if (set == null) return null;
                     uId = set.getInt("id");
                     name = set.getString("name");
                     corpId = set.getInt("corporation_id");
                     allianceId = set.getInt("alliance_id");
                 } else {
-                    var set = DatabaseAccessHolding.executeQuery(conn, sql);
+                    var set = stat.executeQuery();
                     while (set.next()) {
                         if (set.getInt("alliance_id") == allianceIdFilter) {
                             uId = set.getInt("id");
