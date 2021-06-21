@@ -25,7 +25,8 @@ public class FeatureRegister {
             "listenGroupMessage", ListenGroupMessage.class,
             "cronKickInvalidMember", CronKickInvalidMember.class,
             "sovAlert", SovAlert.class,
-            "-10tracking", BadCharacterTracking.class
+            "-10tracking", BadCharacterTracking.class,
+            "searchEsiUser", SearchEsiUser.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -78,6 +79,12 @@ public class FeatureRegister {
         }
         if (classEquals(featureClass, BadCharacterTracking.class)) {
             var obj = new BadCharacterTracking(bot, logger, config.getBadCharacterNoticeGroup());
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+            return;
+        }
+        if (classEquals(featureClass, SearchEsiUser.class)) {
+            var obj = new SearchEsiUser(bot);
             obj.setEnabled(true);
             featureQueue.add(obj);
         }

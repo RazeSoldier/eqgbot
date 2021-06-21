@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'razesoldier'
-version '2.1.2'
+version '2.2.0'
 
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
@@ -38,7 +38,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainClass = 'razesoldier.eqgbot.Entry'
-    applicationDefaultJvmArgs = ['-Xms128m', '-Xmx128m']
+    applicationDefaultJvmArgs = ['-Xms128m', '-Xmx128m', '-Dmirai.no-desktop']
 }
 
 test {

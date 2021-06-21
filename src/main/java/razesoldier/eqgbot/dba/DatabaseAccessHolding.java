@@ -48,6 +48,7 @@ public class DatabaseAccessHolding {
         gfConfigRef.add(new StringRefAddr("user", gfConfig.getUser()));
         gfConfigRef.add(new StringRefAddr("password", gfConfig.getPassword()));
         gfConfigRef.add(new StringRefAddr("serverTimezone", TimeZones.GMT_ID));
+        gfConfigRef.add(new StringRefAddr("characterEncoding", "UTF-8"));
         dataSources[GameServer.GF.getI()] = (MysqlDataSource) new MysqlDataSourceFactory()
                 .getObjectInstance(gfConfigRef, null, null, null);
     }
