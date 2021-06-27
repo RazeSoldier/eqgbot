@@ -14,6 +14,7 @@ import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.Config;
 import razesoldier.eqgbot.GroupMap;
+import razesoldier.eqgbot.queue.MessageQueueFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class FeatureRegister {
             return;
         }
         if (classEquals(featureClass, SovAlert.class)) {
-            var obj = new SovAlert(bot, logger, config.getSovAlertGroup());
+            var obj = new SovAlert(bot, config.getSovAlertGroup(), new MessageQueueFactory().newInstance(config));
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;

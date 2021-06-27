@@ -10,9 +10,12 @@
 package razesoldier.eqgbot.feature;
 
 import io.timeandspace.cronscheduler.CronScheduler;
+import io.timeandspace.cronscheduler.CronTask;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.utils.MiraiLogger;
-import razesoldier.eqgbot.job.CheckCharacterNotification;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import razesoldier.eqgbot.job.HandleSovAlertMessageQueue;
+import razesoldier.eqgbot.queue.MessageQueue;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -22,19 +25,25 @@ import java.util.concurrent.TimeUnit;
  */
 class SovAlert extends FeatureBase {
     private final Bot bot;
-    private final MiraiLogger logger;
     private final int groupId;
+    private final MessageQueue messageQueue;
 
-    SovAlert(Bot bot, MiraiLogger logger, int groupId) {
+    SovAlert(Bot bot, int groupId, MessageQueue messageQueue) {
         this.bot = bot;
-        this.logger = logger;
         this.groupId = groupId;
+        this.messageQueue = messageQueue;
     }
 
     @Override
     void handle() {
         CronScheduler scheduler = CronScheduler.create(Duration.ofMinutes(5));
-        scheduler.scheduleAtFixedRateSkippingToLatest(0, 2, TimeUnit.MINUTES,
-                new CheckCharacterNotification(bot, logger, groupId));
+        // 每分钟执行一次
+        scheduler.scheduleAtFixedRateSkippingToLatest(0, 1, TimeUnit.MINUTES, getTask());
+    }
+
+    @NotNull
+    @Contract(value = " -> new", pure = true)
+    private CronTask getTask() {
+        return new HandleSovAlertMessageQueue(messageQueue, bot.getGroup(groupId));
     }
 }
