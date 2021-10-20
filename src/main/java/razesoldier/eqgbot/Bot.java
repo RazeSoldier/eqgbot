@@ -39,13 +39,7 @@ class Bot {
 
     public void run() throws IOException {
         final var account = config.getAccount();
-        net.mamoe.mirai.Bot bot = BotFactory.INSTANCE.newBot(account.getId(), account.getPassword(), new BotConfiguration() {
-            {
-                // 将设备信息保存为文件。以便以后登录无须验证。
-                fileBasedDeviceInfo(deviceInfoPath);
-                setProtocol(MiraiProtocol.ANDROID_PAD);
-            }
-        });
+        net.mamoe.mirai.Bot bot = BotFactory.INSTANCE.newBot(account.getId(), account.getPassword(), getBotConfig());
 
         MiraiLogger logger = new Logger(new File(System.getProperty("user.dir") + "/eqgbot.log"));
         GroupMap groupMap = new GroupMap();
@@ -58,5 +52,13 @@ class Bot {
         bot.login();
         featureRegister.register();
         bot.join();
+    }
+
+    @NotNull
+    private BotConfiguration getBotConfig() {
+        var botConfig = new BotConfiguration();
+        botConfig.fileBasedDeviceInfo(deviceInfoPath);
+        botConfig.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PAD);
+        return botConfig;
     }
 }
