@@ -11,6 +11,7 @@ package razesoldier.eqgbot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Config {
     private List<String> features = new ArrayList<>();
@@ -20,6 +21,7 @@ public class Config {
     private int sovAlertGroup;
     private String sovAlertQueueKey;
     private int badCharacterNoticeGroup;
+    private Map<String, Integer> pingGroup;
 
     public List<String> getFeatures() {
         return features;
@@ -75,6 +77,14 @@ public class Config {
 
     public void setSovAlertQueueKey(String sovAlertQueueKey) {
         this.sovAlertQueueKey = sovAlertQueueKey;
+    }
+
+    public Map<String, Integer> getPingGroup() {
+        return pingGroup;
+    }
+
+    public void setPingGroup(Map<String, Integer> pingGroup) {
+        this.pingGroup = pingGroup;
     }
 
     public static class DatabaseConfig {

@@ -42,9 +42,7 @@ class Bot {
         net.mamoe.mirai.Bot bot = BotFactory.INSTANCE.newBot(account.getId(), account.getPassword(), getBotConfig());
 
         MiraiLogger logger = new Logger(new File(System.getProperty("user.dir") + "/eqgbot.log"));
-        GroupMap groupMap = new GroupMap();
-        groupMap.put(new Group(876472453, GameServer.OF));
-        groupMap.put(new Group(920169144, GameServer.GF));
+        GroupMap groupMap = initGroupMap();
 
         FeatureRegister featureRegister = new FeatureRegister(bot, groupMap, logger, config);
         config.getFeatures().forEach(featureRegister::enable);
@@ -60,5 +58,20 @@ class Bot {
         botConfig.fileBasedDeviceInfo(deviceInfoPath);
         botConfig.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PAD);
         return botConfig;
+    }
+
+    @NotNull
+    private GroupMap initGroupMap() {
+        var groupMap = new GroupMap();
+        var pingGroupConfig = config.getPingGroup();
+        var ofGroupNumber = pingGroupConfig.get("of");
+        var gfGroupNumber = pingGroupConfig.get("gf");
+        if (ofGroupNumber != null) {
+            groupMap.put(new Group(ofGroupNumber, GameServer.OF));
+        }
+        if (gfGroupNumber != null) {
+            groupMap.put(new Group(gfGroupNumber, GameServer.GF));
+        }
+        return groupMap;
     }
 }
