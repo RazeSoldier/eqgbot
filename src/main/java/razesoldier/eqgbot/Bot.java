@@ -63,7 +63,7 @@ class Bot {
     @NotNull
     private GroupMap initGroupMap() {
         var groupMap = new GroupMap();
-        var pingGroupConfig = config.getPingGroup();
+        var pingGroupConfig = config.getPingGroups();
         var ofGroupNumber = pingGroupConfig.get("of");
         var gfGroupNumber = pingGroupConfig.get("gf");
         if (ofGroupNumber != null) {

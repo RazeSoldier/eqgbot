@@ -21,7 +21,7 @@ public class Config {
     private int sovAlertGroup;
     private String sovAlertQueueKey;
     private int badCharacterNoticeGroup;
-    private Map<String, Integer> pingGroup;
+    private Map<String, Integer> pingGroups;
 
     public List<String> getFeatures() {
         return features;
@@ -79,12 +79,12 @@ public class Config {
         this.sovAlertQueueKey = sovAlertQueueKey;
     }
 
-    public Map<String, Integer> getPingGroup() {
-        return pingGroup;
+    public Map<String, Integer> getPingGroups() {
+        return pingGroups;
     }
 
-    public void setPingGroup(Map<String, Integer> pingGroup) {
-        this.pingGroup = pingGroup;
+    public void setPingGroups(Map<String, Integer> pingGroups) {
+        this.pingGroups = pingGroups;
     }
 
     public static class DatabaseConfig {
