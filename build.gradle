@@ -21,7 +21,7 @@ dependencies {
         api("net.mamoe:mirai-core-api:" + miraiVersion) // 编译代码使用
         runtimeOnly("net.mamoe:mirai-core:" + miraiVersion) // 运行时使用
     }
-    implementation('mysql:mysql-connector-java:8.0.25') // https://github.com/mysql/mysql-connector-j
+    implementation('mysql:mysql-connector-java:8.0.27') // https://github.com/mysql/mysql-connector-j
     implementation('com.beust:jcommander:1.81')
     implementation('io.timeandspace:cron-scheduler:0.1') // https://github.com/TimeAndSpaceIO/CronScheduler
     implementation('org.apache.commons:commons-lang3:3.12.0')
