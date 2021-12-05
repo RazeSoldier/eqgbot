@@ -5,10 +5,10 @@ plugins {
 }
 
 group 'razesoldier'
-version '2.4.1'
+version '3.0.0'
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
@@ -28,9 +28,9 @@ dependencies {
     implementation('net.troja.eve:eve-esi:4.6.0')
     implementation('com.alibaba:fastjson:1.2.78')
     implementation('redis.clients:jedis:3.6.3')
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.8.1')
-    testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.8.1')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.8.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.8.2')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher:1.8.2')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.8.2')
 }
 
 tasks.withType(JavaCompile) {

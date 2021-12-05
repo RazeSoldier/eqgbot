@@ -20,8 +20,8 @@ public class Config {
     private QQAccount account = new QQAccount();
     private int sovAlertGroup;
     private String sovAlertQueueKey;
-    private int badCharacterNoticeGroup;
     private Map<String, Integer> pingGroups;
+    private String redisPassword;
 
     public List<String> getFeatures() {
         return features;
@@ -63,14 +63,6 @@ public class Config {
         return sovAlertGroup;
     }
 
-    public int getBadCharacterNoticeGroup() {
-        return badCharacterNoticeGroup;
-    }
-
-    public void setBadCharacterNoticeGroup(int badCharacterNoticeGroup) {
-        this.badCharacterNoticeGroup = badCharacterNoticeGroup;
-    }
-
     public String getSovAlertQueueKey() {
         return sovAlertQueueKey;
     }
@@ -85,6 +77,14 @@ public class Config {
 
     public void setPingGroups(Map<String, Integer> pingGroups) {
         this.pingGroups = pingGroups;
+    }
+
+    public String getRedisPassword() {
+        return redisPassword;
+    }
+
+    public void setRedisPassword(String redisPassword) {
+        this.redisPassword = redisPassword;
     }
 
     public static class DatabaseConfig {

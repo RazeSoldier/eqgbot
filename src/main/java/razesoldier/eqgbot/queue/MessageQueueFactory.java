@@ -16,7 +16,7 @@ public class MessageQueueFactory {
 
     public MessageQueue newInstance(Config config) {
         if (instance == null) {
-            instance = new RedisMessageQueue(config.getSovAlertQueueKey());
+            instance = new RedisMessageQueue(config.getSovAlertQueueKey(), config.getRedisPassword());
         }
         return instance;
     }

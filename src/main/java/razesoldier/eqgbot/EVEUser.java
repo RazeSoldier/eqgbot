@@ -81,6 +81,7 @@ public class EVEUser {
             int corpId = 0;
             int allianceId = 0;
             {
+                // 首先在`qqs`表查询所有与id一样的记录（可能不止一条因为很可能多个用户绑定同一个QQ号）
                 @Language("MySQL") var preSql = """
                         select characters.id,characters.name,character_affiliations.corporation_id,character_affiliations.alliance_id
                         from qqs
@@ -99,6 +100,8 @@ public class EVEUser {
                     corpId = set.getInt("corporation_id");
                     allianceId = set.getInt("alliance_id");
                 } else {
+                    // 如果设置了allianceIdFilter则遍历上面查询到的记录
+                    // 对比角色的联盟ID和allianceIdFilter
                     var set = stat.executeQuery();
                     while (set.next()) {
                         if (set.getInt("alliance_id") == allianceIdFilter) {
@@ -108,6 +111,7 @@ public class EVEUser {
                             allianceId = set.getInt("alliance_id");
                         }
                     }
+                    // 如果在这里uId / name / corpId 都为空说明该QQ号绑定的用户里没有符合allianceIdFilter的用户
                     if (uId == 0 || name == null || corpId == 0) {
                         return null;
                     }

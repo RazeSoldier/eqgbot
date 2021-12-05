@@ -23,11 +23,9 @@ import java.util.Map;
 public class FeatureRegister {
     private static final Map<String, Class<? extends Feature>> featureMap = Map.of(
             "listenJoinGroupRequest", ListenJoinGroupRequest.class,
-            "listenGroupMessage", ListenGroupMessage.class,
-            "cronKickInvalidMember", CronKickInvalidMember.class,
             "sovAlert", SovAlert.class,
-            "-10tracking", BadCharacterTracking.class,
-            "searchEsiUser", SearchEsiUser.class
+            "searchEsiUser", SearchEsiUser.class,
+            "exportInvalidGroupMembers", ExportInvalidPingGroupMembers.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -60,32 +58,20 @@ public class FeatureRegister {
             featureQueue.add(obj);
             return;
         }
-        if (classEquals(featureClass, ListenGroupMessage.class)) {
-            var obj = new ListenGroupMessage(bot);
-            obj.setEnabled(true);
-            featureQueue.add(obj);
-            return;
-        }
-        if (classEquals(featureClass, CronKickInvalidMember.class)) {
-            var obj = new CronKickInvalidMember(bot, logger);
-            obj.setEnabled(true);
-            featureQueue.add(obj);
-            return;
-        }
         if (classEquals(featureClass, SovAlert.class)) {
             var obj = new SovAlert(bot, config.getSovAlertGroup(), new MessageQueueFactory().newInstance(config));
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
         }
-        if (classEquals(featureClass, BadCharacterTracking.class)) {
-            var obj = new BadCharacterTracking(bot, logger, config.getBadCharacterNoticeGroup());
+        if (classEquals(featureClass, SearchEsiUser.class)) {
+            var obj = new SearchEsiUser(bot);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
         }
-        if (classEquals(featureClass, SearchEsiUser.class)) {
-            var obj = new SearchEsiUser(bot);
+        if (classEquals(featureClass, ExportInvalidPingGroupMembers.class)) {
+            var obj = new ExportInvalidPingGroupMembers(bot, config.getPingGroups().get("gf"));
             obj.setEnabled(true);
             featureQueue.add(obj);
         }

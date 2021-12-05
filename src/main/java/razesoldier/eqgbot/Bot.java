@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * QQ机器人的主类。
@@ -29,11 +30,13 @@ import java.nio.file.Path;
 class Bot {
     private final Config config;
     private final String deviceInfoPath;
+    private final List<String> cliParameters;
 
-    Bot(@NotNull String configPath, @NotNull String deviceInfoPath, @NotNull String whitelistPath) throws Exception {
+    Bot(@NotNull String configPath, @NotNull String deviceInfoPath, List<String> cliParameters)
+            throws Exception {
         config = JSON.parseObject(Files.readString(Path.of(configPath)), Config.class);
+        this.cliParameters = cliParameters;
         this.deviceInfoPath = deviceInfoPath;
-        QQWhiteList.init(new File(whitelistPath));
         DatabaseAccessHolding.initService(config.getOfDatabaseConfig(), config.getGfDatabaseConfig());
     }
 
@@ -43,13 +46,19 @@ class Bot {
 
         MiraiLogger logger = new Logger(new File(System.getProperty("user.dir") + "/eqgbot.log"));
         GroupMap groupMap = initGroupMap();
-
         FeatureRegister featureRegister = new FeatureRegister(bot, groupMap, logger, config);
-        config.getFeatures().forEach(featureRegister::enable);
 
-        bot.login();
-        featureRegister.register();
-        bot.join();
+        if (isDaemon()) {
+            config.getFeatures().forEach(featureRegister::enable);
+            bot.login();
+            featureRegister.register();
+            bot.join();
+        } else {
+            featureRegister.enable(cliParameters.get(0));
+            bot.login();
+            featureRegister.register();
+            bot.close();
+        }
     }
 
     @NotNull
@@ -73,5 +82,12 @@ class Bot {
             groupMap.put(new Group(gfGroupNumber, GameServer.GF));
         }
         return groupMap;
+    }
+
+    /**
+     * 如果没有命令行参数，则说明以守护进程运行
+     */
+    private boolean isDaemon() {
+        return this.cliParameters.isEmpty();
     }
 }

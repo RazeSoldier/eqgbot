@@ -17,9 +17,10 @@ public class RedisMessageQueue implements MessageQueue {
     private final String queueKey;
     private final Jedis jedis;
 
-    RedisMessageQueue(String queueKey) {
+    RedisMessageQueue(String queueKey, String password) {
         this.queueKey = queueKey;
         jedis = new Jedis();
+        jedis.auth(password);
     }
 
     @Override
