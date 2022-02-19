@@ -31,16 +31,8 @@ public class DatabaseAccessHolding {
     private static DatabaseAccessHolding instance;
     private final DataSource[] dataSources = new DataSource[2];
 
-    private DatabaseAccessHolding(Config.DatabaseConfig ofConfig, Config.DatabaseConfig gfConfig) throws Exception {
+    private DatabaseAccessHolding(Config.DatabaseConfig gfConfig) throws Exception {
         final var className = MysqlDataSource.class.getName();
-
-        var ofConfigRef = new Reference(className);
-        ofConfigRef.add(new StringRefAddr("serverName", ofConfig.getServerName()));
-        ofConfigRef.add(new StringRefAddr("databaseName", ofConfig.getDatabaseName()));
-        ofConfigRef.add(new StringRefAddr("user", ofConfig.getUser()));
-        ofConfigRef.add(new StringRefAddr("password", ofConfig.getPassword()));
-        dataSources[GameServer.OF.getI()] = (MysqlDataSource) new MysqlDataSourceFactory()
-                .getObjectInstance(ofConfigRef, null, null, null);
 
         var gfConfigRef = new Reference(className);
         gfConfigRef.add(new StringRefAddr("serverName", gfConfig.getServerName()));
@@ -53,11 +45,11 @@ public class DatabaseAccessHolding {
                 .getObjectInstance(gfConfigRef, null, null, null);
     }
 
-    public static void initService(Config.DatabaseConfig ofConfig, Config.DatabaseConfig gfConfig) throws Exception {
+    public static void initService(Config.DatabaseConfig gfConfig) throws Exception {
         if (instance != null) {
             throw new RuntimeException("DatabaseAccessHolding service already initialized");
         }
-        instance = new DatabaseAccessHolding(ofConfig, gfConfig);
+        instance = new DatabaseAccessHolding(gfConfig);
     }
 
     public static DatabaseAccessHolding getInstance() {

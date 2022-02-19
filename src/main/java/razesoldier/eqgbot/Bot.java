@@ -37,7 +37,7 @@ class Bot {
         config = JSON.parseObject(Files.readString(Path.of(configPath)), Config.class);
         this.cliParameters = cliParameters;
         this.deviceInfoPath = deviceInfoPath;
-        DatabaseAccessHolding.initService(config.getOfDatabaseConfig(), config.getGfDatabaseConfig());
+        DatabaseAccessHolding.initService(config.getGfDatabaseConfig());
     }
 
     public void run() throws IOException {
@@ -45,8 +45,7 @@ class Bot {
         net.mamoe.mirai.Bot bot = BotFactory.INSTANCE.newBot(account.getId(), account.getPassword(), getBotConfig());
 
         MiraiLogger logger = new Logger(new File(System.getProperty("user.dir") + "/eqgbot.log"));
-        GroupMap groupMap = initGroupMap();
-        FeatureRegister featureRegister = new FeatureRegister(bot, groupMap, logger, config);
+        FeatureRegister featureRegister = new FeatureRegister(bot, logger, config);
 
         if (isDaemon()) {
             config.getFeatures().forEach(featureRegister::enable);
@@ -67,21 +66,6 @@ class Bot {
         botConfig.fileBasedDeviceInfo(deviceInfoPath);
         botConfig.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PAD);
         return botConfig;
-    }
-
-    @NotNull
-    private GroupMap initGroupMap() {
-        var groupMap = new GroupMap();
-        var pingGroupConfig = config.getPingGroups();
-        var ofGroupNumber = pingGroupConfig.get("of");
-        var gfGroupNumber = pingGroupConfig.get("gf");
-        if (ofGroupNumber != null) {
-            groupMap.put(new Group(ofGroupNumber, GameServer.OF));
-        }
-        if (gfGroupNumber != null) {
-            groupMap.put(new Group(gfGroupNumber, GameServer.GF));
-        }
-        return groupMap;
     }
 
     /**

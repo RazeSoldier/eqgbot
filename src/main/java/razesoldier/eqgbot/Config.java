@@ -16,12 +16,12 @@ import java.util.Map;
 public class Config {
     private List<String> features = new ArrayList<>();
     private DatabaseConfig gfDatabaseConfig = new DatabaseConfig();
-    private DatabaseConfig ofDatabaseConfig = new DatabaseConfig();
     private QQAccount account = new QQAccount();
     private int sovAlertGroup;
     private String sovAlertQueueKey;
     private Map<String, Integer> pingGroups;
     private String redisPassword;
+    private List<Long> pingGroupList;
 
     public List<String> getFeatures() {
         return features;
@@ -37,14 +37,6 @@ public class Config {
 
     public void setGfDatabaseConfig(DatabaseConfig gfDatabaseConfig) {
         this.gfDatabaseConfig = gfDatabaseConfig;
-    }
-
-    public DatabaseConfig getOfDatabaseConfig() {
-        return ofDatabaseConfig;
-    }
-
-    public void setOfDatabaseConfig(DatabaseConfig ofDatabaseConfig) {
-        this.ofDatabaseConfig = ofDatabaseConfig;
     }
 
     public QQAccount getAccount() {
@@ -85,6 +77,14 @@ public class Config {
 
     public void setRedisPassword(String redisPassword) {
         this.redisPassword = redisPassword;
+    }
+
+    public List<Long> getPingGroupList() {
+        return pingGroupList;
+    }
+
+    public void setPingGroupList(List<Long> pingGroupList) {
+        this.pingGroupList = pingGroupList;
     }
 
     public static class DatabaseConfig {

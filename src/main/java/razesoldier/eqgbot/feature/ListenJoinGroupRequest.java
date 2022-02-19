@@ -11,22 +11,23 @@ package razesoldier.eqgbot.feature;
 
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.utils.MiraiLogger;
-import razesoldier.eqgbot.GroupMap;
 import razesoldier.eqgbot.job.HandleJoinGroupEvent;
+
+import java.util.List;
 
 class ListenJoinGroupRequest extends FeatureBase {
     private final Bot bot;
-    private final GroupMap groupMap;
+    private final List<Long> groupList;
     private final MiraiLogger logger;
 
-    public ListenJoinGroupRequest(Bot bot, GroupMap groupMap, MiraiLogger logger) {
+    public ListenJoinGroupRequest(Bot bot, List<Long> groupList, MiraiLogger logger) {
         this.bot = bot;
-        this.groupMap = groupMap;
+        this.groupList = groupList;
         this.logger = logger;
     }
 
     @Override
     void handle() {
-        bot.getEventChannel().registerListenerHost(new HandleJoinGroupEvent(groupMap, logger));
+        bot.getEventChannel().registerListenerHost(new HandleJoinGroupEvent(groupList, logger, bot));
     }
 }

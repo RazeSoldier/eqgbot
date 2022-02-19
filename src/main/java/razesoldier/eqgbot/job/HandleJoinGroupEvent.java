@@ -10,26 +10,28 @@
 package razesoldier.eqgbot.job;
 
 import kotlin.coroutines.CoroutineContext;
+import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.EVEUser;
-import razesoldier.eqgbot.GameServer;
-import razesoldier.eqgbot.Group;
-import razesoldier.eqgbot.GroupMap;
+
+import java.util.List;
 
 /**
  * 处理进群请求。
  */
 public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
-    private final GroupMap groupMap;
     private final MiraiLogger logger;
+    private final Bot bot;
+    private final List<Long> groupList;
 
-    public HandleJoinGroupEvent(GroupMap groupMap, MiraiLogger logger) {
-        this.groupMap = groupMap;
+    public HandleJoinGroupEvent(List<Long> groupList, MiraiLogger logger, Bot bot) {
+        this.groupList = groupList;
         this.logger = logger;
+        this.bot = bot;
     }
 
     @EventHandler
@@ -37,22 +39,21 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
         try {
             // 判断接受到的事件是要监听的群
             final var groupId = event.getGroupId();
-            if (!groupMap.hasGroup(groupId)) {
+            if (!groupList.contains(groupId)) {
+                return;
+            }
+            final var fromId = event.getFromId();
+            logger.info(groupId + ": 接受到" + fromId + "的入群请求");
+
+            if (checkAccountIsJoin(fromId)) {
+                logger.info(groupId + ": 拒绝" + fromId + "的入群请求，原因：角色已经在另外一个集结群");
+                event.reject(false, "你已经加入另一个集结群了");
                 return;
             }
 
-            final Group group = groupMap.get(groupId);
-            final var fromId = event.getFromId();
-            logger.info(groupId + ": 接受到" + fromId + "的入群请求");
-            EVEUser user;
-            if (group.getServer() == GameServer.GF) {
-                user = EVEUser.newInstanceFromGF(fromId, 562593865);
-            } else {
-                user = EVEUser.newInstanceFromOF(fromId);
-            }
-
+            EVEUser user = EVEUser.newInstanceFromGF(fromId, 562593865);
             if (user != null) {
-                if (group.getServer() == GameServer.GF && !user.getAllianceName().equals("VENI VIDI VICI")) {
+                if (!user.getAllianceName().equals("VENI VIDI VICI")) {
                     logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:角色不在主联盟");
                     event.reject(false, "查询不到QQ绑定记录");
                     return;
@@ -60,12 +61,8 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
                 event.accept(); // 接受请求
                 logger.info(groupId + ": 接受" + fromId + "的入群请求");
                 // 并发送“军团-角色名”到群聊
-                if (group.getServer() == GameServer.OF) {
-                    event.getGroup().sendMessage(user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");
-                } else {
-                    event.getGroup().sendMessage("欢迎加入VVV国服集结群，" +
-                            user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");
-                }
+                event.getGroup().sendMessage("欢迎加入VVV国服集结群，" +
+                        user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");
             } else {
                 logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:查询不到QQ绑定记录");
                 event.reject(false, "查询不到QQ绑定记录");
@@ -78,5 +75,18 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
 
     public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
         super.handleException(context, exception);
+    }
+
+    /**
+     * 检查指定的QQ帐号是否存在于{@link HandleJoinGroupEvent#groupList}中
+     * @return 如果存在返回TRUE，不存在返回FALSE
+     */
+    private boolean checkAccountIsJoin(Long id) {
+        for (Long groupId : groupList) {
+            if (bot.getGroupOrFail(groupId).contains(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

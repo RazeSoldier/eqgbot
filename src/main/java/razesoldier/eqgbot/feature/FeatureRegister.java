@@ -13,7 +13,6 @@ import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.Config;
-import razesoldier.eqgbot.GroupMap;
 import razesoldier.eqgbot.queue.MessageQueueFactory;
 
 import java.util.ArrayList;
@@ -29,13 +28,11 @@ public class FeatureRegister {
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
-    private final GroupMap groupMap;
     private final MiraiLogger logger;
     private final Config config;
 
-    public FeatureRegister(Bot bot, GroupMap groupMap, MiraiLogger logger, Config config) {
+    public FeatureRegister(Bot bot, MiraiLogger logger, Config config) {
         this.bot = bot;
-        this.groupMap = groupMap;
         this.logger = logger;
         this.config = config;
     }
@@ -53,7 +50,7 @@ public class FeatureRegister {
 
     private void initFeature(@NotNull Class<? extends Feature> featureClass) {
         if (classEquals(featureClass, ListenJoinGroupRequest.class)) {
-            var obj = new ListenJoinGroupRequest(bot, groupMap, logger);
+            var obj = new ListenJoinGroupRequest(bot, config.getPingGroupList(), logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;
