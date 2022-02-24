@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Logger extends PlatformLogger {
     private final File file;
@@ -38,7 +38,7 @@ public class Logger extends PlatformLogger {
         }
 
         try {
-            String s = getTimeFormat().format(new Date()) + " " + priority.getSimpleName() + "/" +
+            String s = LocalDateTime.now().format(getFormatter()) + " " + priority.getSimpleName() + "/" +
                     getIdentity() + ": " + message + "\n";
             Files.writeString(file.toPath(), s, StandardOpenOption.APPEND);
         } catch (IOException e) {
