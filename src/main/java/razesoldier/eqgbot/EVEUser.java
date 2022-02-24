@@ -83,11 +83,12 @@ public class EVEUser {
             {
                 // 首先在`qqs`表查询所有与id一样的记录（可能不止一条因为很可能多个用户绑定同一个QQ号）
                 @Language("MySQL") var preSql = """
-                        select characters.id,characters.name,character_affiliations.corporation_id,character_affiliations.alliance_id
+                        select characters.id, characters.name, character_affiliations.corporation_id, character_affiliations.alliance_id
                         from qqs
-                        inner join users on users.id=qqs.user_id
-                        inner join characters on characters.id=users.id
-                        inner join character_affiliations on character_affiliations.character_id=characters.id
+                            inner join users on users.id = qqs.user_id
+                            inner join user_characters uc on users.id = uc.user_id
+                            inner join characters on characters.id = uc.character_id
+                            inner join character_affiliations on character_affiliations.character_id = characters.id
                         where qq_id = ?
                         """;
                 PreparedStatement stat = conn.prepareStatement(preSql);
