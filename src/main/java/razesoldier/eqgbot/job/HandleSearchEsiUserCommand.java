@@ -35,9 +35,10 @@ public class HandleSearchEsiUserCommand extends SimpleListenerHost {
         String searchText = revMsg.substring(5);
         try (var conn = DatabaseAccessHolding.getInstance().getConnection(GameServer.GF)) {
             @Language("MySQL") var preSql = """
-                    select users.id
-                    from users
-                             inner join tokens on tokens.character_id = users.id
+                    select user_characters.user_id
+                    from user_characters
+                            inner join characters c on user_characters.character_id = c.id
+                            inner join tokens on tokens.character_id = c.id
                     where name = ? and valid = 1
                       and JSON_CONTAINS(scopes, JSON_ARRAY('esi-mail.read_mail.v1',
                                                            'esi-wallet.read_character_wallet.v1',
@@ -68,7 +69,7 @@ public class HandleSearchEsiUserCommand extends SimpleListenerHost {
         }
     }
 
-    public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
+    public void  handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
         super.handleException(context, exception);
     }
 }
