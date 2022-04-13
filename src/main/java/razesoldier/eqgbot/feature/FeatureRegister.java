@@ -56,7 +56,7 @@ public class FeatureRegister {
             return;
         }
         if (classEquals(featureClass, SovAlert.class)) {
-            var obj = new SovAlert(bot, config.getSovAlertGroup(), new MessageQueueFactory().newInstance(config));
+            var obj = new SovAlert(bot, config.getSovAlertGroup(), MessageQueueFactory.newSovAlertQueue(config));
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;

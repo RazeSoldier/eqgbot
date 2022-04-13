@@ -9,15 +9,16 @@
 
 package razesoldier.eqgbot.queue;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.Config;
 
 public class MessageQueueFactory {
-    private static MessageQueue instance;
+    private MessageQueueFactory() {}
 
-    public MessageQueue newInstance(Config config) {
-        if (instance == null) {
-            instance = new RedisMessageQueue(config.getSovAlertQueueKey(), config.getRedisPassword());
-        }
-        return instance;
+    @NotNull
+    @Contract("_ -> new")
+    public static MessageQueue newSovAlertQueue(@NotNull Config config) {
+        return new RedisMessageQueue(config.getSovAlertQueueKey(), config.getRedisPassword());
     }
 }
