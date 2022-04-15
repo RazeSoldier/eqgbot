@@ -21,4 +21,10 @@ public class MessageQueueFactory {
     public static MessageQueue newSovAlertQueue(@NotNull Config config) {
         return new RedisMessageQueue(config.getSovAlertQueueKey(), config.getRedisPassword());
     }
+
+    @NotNull
+    @Contract("_ -> new")
+    public static MessageQueue newStructureAlertQueue(@NotNull Config config) {
+        return new RedisMessageQueue(config.getStructureAlertQueueKey(), config.getRedisPassword());
+    }
 }

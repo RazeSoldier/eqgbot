@@ -22,6 +22,8 @@ public class Config {
     private Map<String, Integer> pingGroups;
     private String redisPassword;
     private List<Long> pingGroupList;
+    private String structureAlertQueueKey;
+    private List<Long> structureAlertGroups;
 
     public List<String> getFeatures() {
         return features;
@@ -85,6 +87,22 @@ public class Config {
 
     public void setPingGroupList(List<Long> pingGroupList) {
         this.pingGroupList = pingGroupList;
+    }
+
+    public String getStructureAlertQueueKey() {
+        return structureAlertQueueKey;
+    }
+
+    public void setStructureAlertQueueKey(String structureAlertQueueKey) {
+        this.structureAlertQueueKey = structureAlertQueueKey;
+    }
+
+    public List<Long> getStructureAlertGroups() {
+        return structureAlertGroups;
+    }
+
+    public void setStructureAlertGroups(List<Long> structureAlertGroups) {
+        this.structureAlertGroups = structureAlertGroups;
     }
 
     public static class DatabaseConfig {

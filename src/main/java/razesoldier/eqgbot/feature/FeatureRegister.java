@@ -24,7 +24,8 @@ public class FeatureRegister {
             "listenJoinGroupRequest", ListenJoinGroupRequest.class,
             "sovAlert", SovAlert.class,
             "searchEsiUser", SearchEsiUser.class,
-            "exportInvalidGroupMembers", ExportInvalidPingGroupMembers.class
+            "exportInvalidGroupMembers", ExportInvalidPingGroupMembers.class,
+            "structureAlert", StructureAlert.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -69,6 +70,11 @@ public class FeatureRegister {
         }
         if (classEquals(featureClass, ExportInvalidPingGroupMembers.class)) {
             var obj = new ExportInvalidPingGroupMembers(bot, config.getPingGroups().get("gf"));
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+        }
+        if (classEquals(featureClass, StructureAlert.class)) {
+            var obj = new StructureAlert(bot, config.getStructureAlertGroups(), MessageQueueFactory.newStructureAlertQueue(config));
             obj.setEnabled(true);
             featureQueue.add(obj);
         }
