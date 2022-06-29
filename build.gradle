@@ -2,10 +2,11 @@ plugins {
     id 'java-library'
     id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    id "io.freefair.lombok" version "6.4.0"
 }
 
 group 'razesoldier'
-version '3.1.1'
+version '3.2.0'
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
