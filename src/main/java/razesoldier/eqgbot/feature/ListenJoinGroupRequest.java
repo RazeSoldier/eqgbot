@@ -10,6 +10,7 @@
 package razesoldier.eqgbot.feature;
 
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.utils.MiraiLogger;
 import razesoldier.eqgbot.job.HandleJoinGroupEvent;
 
@@ -17,17 +18,22 @@ import java.util.List;
 
 class ListenJoinGroupRequest extends FeatureBase {
     private final Bot bot;
-    private final List<Long> groupList;
+    private final List<Long> vettedGroupList;
+    private final List<Long> pingGroupList;
     private final MiraiLogger logger;
 
-    public ListenJoinGroupRequest(Bot bot, List<Long> groupList, MiraiLogger logger) {
+    public ListenJoinGroupRequest(Bot bot, List<Long> vettedGroupList, List<Long> pingGroupList, MiraiLogger logger) {
         this.bot = bot;
-        this.groupList = groupList;
+        this.vettedGroupList = vettedGroupList;
+        this.pingGroupList = pingGroupList;
         this.logger = logger;
     }
 
     @Override
     void handle() {
-        bot.getEventChannel().registerListenerHost(new HandleJoinGroupEvent(groupList, logger, bot));
+        bot.getEventChannel()
+                .filterIsInstance(MemberJoinRequestEvent.class)
+                .filter(event -> vettedGroupList.contains(event.getGroupId()))
+                .subscribeAlways(MemberJoinRequestEvent.class, new HandleJoinGroupEvent(vettedGroupList, pingGroupList, logger, bot));
     }
 }

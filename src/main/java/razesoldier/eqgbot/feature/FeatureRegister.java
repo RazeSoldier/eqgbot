@@ -51,7 +51,7 @@ public class FeatureRegister {
 
     private void initFeature(@NotNull Class<? extends Feature> featureClass) {
         if (classEquals(featureClass, ListenJoinGroupRequest.class)) {
-            var obj = new ListenJoinGroupRequest(bot, config.getVettedGroupList(), logger);
+            var obj = new ListenJoinGroupRequest(bot, config.getVettedGroupList(), config.getPingGroupList(), logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
             return;

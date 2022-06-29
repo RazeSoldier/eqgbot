@@ -9,43 +9,39 @@
 
 package razesoldier.eqgbot.job;
 
-import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.event.EventHandler;
-import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.utils.MiraiLogger;
-import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.EVEUser;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 处理进群请求。
  */
-public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
+public class HandleJoinGroupEvent implements Job, Consumer<MemberJoinRequestEvent> {
     private final MiraiLogger logger;
     private final Bot bot;
-    private final List<Long> groupList;
+    private final List<Long> vettedGroupList;
+    private final List<Long> pingGroupList;
 
-    public HandleJoinGroupEvent(List<Long> groupList, MiraiLogger logger, Bot bot) {
-        this.groupList = groupList;
+    public HandleJoinGroupEvent(List<Long> vettedGroupList, List<Long> pingGroupList, MiraiLogger logger, Bot bot) {
+        this.vettedGroupList = vettedGroupList;
+        this.pingGroupList = pingGroupList;
         this.logger = logger;
         this.bot = bot;
     }
 
-    @EventHandler
-    public void onRequestJoinGroup(MemberJoinRequestEvent event) throws Exception {
+    @Override
+    public void accept(MemberJoinRequestEvent event) {
         try {
-            // 判断接受到的事件是要监听的群
             final var groupId = event.getGroupId();
-            if (!groupList.contains(groupId)) {
-                return;
-            }
             final var fromId = event.getFromId();
             logger.info(groupId + ": 接受到" + fromId + "的入群请求");
+            boolean isPingGroup = pingGroupList.contains(groupId); // 判断当前申请的是不是集结群
 
-            if (checkAccountIsJoin(fromId)) {
+            if (isPingGroup && checkAccountIsJoin(fromId)) {
                 logger.info(groupId + ": 拒绝" + fromId + "的入群请求，原因：角色已经在另外一个集结群");
                 event.reject(false, "你已经加入另一个集结群了");
                 return;
@@ -60,29 +56,27 @@ public class HandleJoinGroupEvent extends SimpleListenerHost implements Job {
                 }
                 event.accept(); // 接受请求
                 logger.info(groupId + ": 接受" + fromId + "的入群请求");
-                // 并发送“军团-角色名”到群聊
-                event.getGroup().sendMessage("欢迎加入VVV国服集结群，" +
-                        user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");
+                if (isPingGroup) {
+                    // 并发送“军团-角色名”到群聊
+                    event.getGroup().sendMessage("欢迎加入VVV国服集结群，" +
+                            user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");
+                }
             } else {
                 logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:查询不到QQ绑定记录");
                 event.reject(false, "查询不到QQ绑定记录");
             }
         } catch (Exception e) {
             event.reject(false, "机器人出错啦，请等待开发维修完毕~");
-            throw new Exception(e);
+            logger.error(e);
         }
     }
 
-    public void handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
-        super.handleException(context, exception);
-    }
-
     /**
-     * 检查指定的QQ帐号是否存在于{@link HandleJoinGroupEvent#groupList}中
+     * 检查指定的QQ帐号是否存在于{@link HandleJoinGroupEvent#vettedGroupList}中
      * @return 如果存在返回TRUE，不存在返回FALSE
      */
     private boolean checkAccountIsJoin(Long id) {
-        for (Long groupId : groupList) {
+        for (Long groupId : vettedGroupList) {
             if (bot.getGroupOrFail(groupId).contains(id)) {
                 return true;
             }

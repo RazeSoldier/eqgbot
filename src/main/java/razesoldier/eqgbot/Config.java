@@ -22,8 +22,17 @@ public class Config {
     private Map<String, Integer> pingGroups;
     private String redisPassword;
     private List<Long> vettedGroupList;
+    private List<Long> pingGroupList;
     private String structureAlertQueueKey;
     private List<Long> structureAlertGroups;
+
+    public List<Long> getPingGroupList() {
+        return pingGroupList;
+    }
+
+    public void setPingGroupList(List<Long> pingGroupList) {
+        this.pingGroupList = pingGroupList;
+    }
 
     public List<String> getFeatures() {
         return features;
