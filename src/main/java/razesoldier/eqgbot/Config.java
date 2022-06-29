@@ -21,7 +21,7 @@ public class Config {
     private String sovAlertQueueKey;
     private Map<String, Integer> pingGroups;
     private String redisPassword;
-    private List<Long> pingGroupList;
+    private List<Long> vettedGroupList;
     private String structureAlertQueueKey;
     private List<Long> structureAlertGroups;
 
@@ -81,12 +81,12 @@ public class Config {
         this.redisPassword = redisPassword;
     }
 
-    public List<Long> getPingGroupList() {
-        return pingGroupList;
+    public List<Long> getVettedGroupList() {
+        return vettedGroupList;
     }
 
-    public void setPingGroupList(List<Long> pingGroupList) {
-        this.pingGroupList = pingGroupList;
+    public void setVettedGroupList(List<Long> vettedGroupList) {
+        this.vettedGroupList = vettedGroupList;
     }
 
     public String getStructureAlertQueueKey() {
