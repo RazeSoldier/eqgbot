@@ -34,6 +34,6 @@ class ListenJoinGroupRequest extends FeatureBase {
         bot.getEventChannel()
                 .filterIsInstance(MemberJoinRequestEvent.class)
                 .filter(event -> vettedGroupList.contains(event.getGroupId()))
-                .subscribeAlways(MemberJoinRequestEvent.class, new HandleJoinGroupEvent(vettedGroupList, pingGroupList, logger, bot));
+                .subscribeAlways(MemberJoinRequestEvent.class, new HandleJoinGroupEvent(pingGroupList, logger, bot));
     }
 }

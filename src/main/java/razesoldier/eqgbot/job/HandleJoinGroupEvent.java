@@ -23,11 +23,9 @@ import java.util.function.Consumer;
 public class HandleJoinGroupEvent implements Job, Consumer<MemberJoinRequestEvent> {
     private final MiraiLogger logger;
     private final Bot bot;
-    private final List<Long> vettedGroupList;
     private final List<Long> pingGroupList;
 
-    public HandleJoinGroupEvent(List<Long> vettedGroupList, List<Long> pingGroupList, MiraiLogger logger, Bot bot) {
-        this.vettedGroupList = vettedGroupList;
+    public HandleJoinGroupEvent(List<Long> pingGroupList, MiraiLogger logger, Bot bot) {
         this.pingGroupList = pingGroupList;
         this.logger = logger;
         this.bot = bot;
@@ -72,11 +70,11 @@ public class HandleJoinGroupEvent implements Job, Consumer<MemberJoinRequestEven
     }
 
     /**
-     * 检查指定的QQ帐号是否存在于{@link HandleJoinGroupEvent#vettedGroupList}中
+     * 检查指定的QQ帐号是否存在于{@link HandleJoinGroupEvent#pingGroupList}中
      * @return 如果存在返回TRUE，不存在返回FALSE
      */
     private boolean checkAccountIsJoin(Long id) {
-        for (Long groupId : vettedGroupList) {
+        for (Long groupId : pingGroupList) {
             if (bot.getGroupOrFail(groupId).contains(id)) {
                 return true;
             }
