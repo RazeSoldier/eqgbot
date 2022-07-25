@@ -25,7 +25,8 @@ public class FeatureRegister {
             "sovAlert", SovAlert.class,
             "searchEsiUser", SearchEsiUser.class,
             "exportInvalidGroupMembers", ExportInvalidPingGroupMembers.class,
-            "structureAlert", StructureAlert.class
+            "structureAlert", StructureAlert.class,
+            "relayDM2Group", RelayDM2Group.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -72,9 +73,16 @@ public class FeatureRegister {
             var obj = new ExportInvalidPingGroupMembers(bot, config.getPingGroups().get("gf"));
             obj.setEnabled(true);
             featureQueue.add(obj);
+            return;
         }
         if (classEquals(featureClass, StructureAlert.class)) {
             var obj = new StructureAlert(bot, config.getStructureAlertGroups(), MessageQueueFactory.newStructureAlertQueue(config));
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+            return;
+        }
+        if (classEquals(featureClass, RelayDM2Group.class)) {
+            var obj = new RelayDM2Group(bot, config.getDmRelayList());
             obj.setEnabled(true);
             featureQueue.add(obj);
         }

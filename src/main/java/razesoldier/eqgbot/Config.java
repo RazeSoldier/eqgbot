@@ -28,6 +28,7 @@ public class Config {
     private List<Long> pingGroupList;
     private String structureAlertQueueKey;
     private List<Long> structureAlertGroups;
+    private List<DMRelayMap> dmRelayList;
 
     @Data
     public static class DatabaseConfig {
@@ -41,5 +42,11 @@ public class Config {
     public static class QQAccount {
         private long id;
         private String password;
+    }
+
+    @Data
+    public static class DMRelayMap {
+        private long src;
+        private long dest;
     }
 }
