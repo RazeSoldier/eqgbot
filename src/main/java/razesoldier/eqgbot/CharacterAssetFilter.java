@@ -52,13 +52,13 @@ public class CharacterAssetFilter {
     }
 
     private static boolean queryDatabase(List<Integer> ids, Connection conn) throws SQLExecuteException {
-        @Language("MySQL") var preSql = """
+        @Language("MySQL") var sql = """
                 select * from titan_pilots
                 where character_id in (?)
                 """;
-        try (PreparedStatement stat = conn.prepareStatement(preSql)) {
-            stat.setString(1, StringUtils.join(ids, ","));
-            ResultSet res = stat.executeQuery();
+        sql = sql.replace("?", StringUtils.join(ids, ","));
+        try (Statement stat = conn.createStatement()) {
+            ResultSet res = stat.executeQuery(sql);
             return res.next();
         } catch (SQLException e) {
             throw new SQLExecuteException(e);
