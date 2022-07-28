@@ -49,7 +49,7 @@ public class CharacterAffiliationFilter {
     /**
      * 按照联盟ID过滤
      */
-    public List<EVECharacter> filterAlliance(int allianceId) {
-        return characters.stream().filter(c -> c.getAllianceId() == allianceId).toList();
+    public List<EVECharacter> filterAlliance(Integer allianceId) {
+        return characters.stream().filter(c -> allianceId.equals(c.getAllianceId())).toList();
     }
 }
