@@ -35,44 +35,8 @@ public class EVEUser {
         this.id = id;
     }
 
-    public static EVEUser newInstance(long id, GameServer server) throws SQLExecuteException {
-        if (server == GameServer.OF) {
-            return EVEUser.newInstanceFromOF(id);
-        }
-        if (server == GameServer.GF) {
-            return EVEUser.newInstanceFromGF(id);
-        }
-        throw new RuntimeException("Unknown server: " + server);
-    }
-
     @Nullable
-    public static EVEUser newInstanceFromOF(long id) throws SQLExecuteException {
-        int uId;
-        String name;
-        String corpName;
-        String allianceName;
-        try (Connection connection = getConnection(GameServer.OF)) {
-            ResultSet set = queryFirst(
-                    connection,
-                    "select users.id,qq.name,qq.corp,qq.alliance from qq,users where qq.name=users.name and qq.qq=" + id
-            );
-            if (set == null) return null;
-            uId = set.getInt("id");
-            name = set.getString("name");
-            corpName = set.getString("corp");
-            allianceName = set.getString("alliance");
-        } catch (SQLException throwables) {
-            throw new SQLExecuteException(throwables);
-        }
-        return new EVEUser(id, name, corpName, allianceName, uId);
-    }
-
-    public static EVEUser newInstanceFromGF(long id) throws SQLExecuteException {
-        return newInstanceFromGF(id, null);
-    }
-
-    @Nullable
-    public static EVEUser newInstanceFromGF(long id, Integer allianceIdFilter) throws SQLExecuteException {
+    public static EVEUser newInstance(long id, Integer allianceIdFilter) throws SQLExecuteException {
         try (Connection conn = getConnection(GameServer.GF)) {
             int uId = 0;
             String name = null;
