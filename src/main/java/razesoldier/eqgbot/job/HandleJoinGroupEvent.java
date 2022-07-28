@@ -12,7 +12,7 @@ package razesoldier.eqgbot.job;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.utils.MiraiLogger;
-import razesoldier.eqgbot.CharacterFilter;
+import razesoldier.eqgbot.CharacterAffiliationFilter;
 import razesoldier.eqgbot.EVECharacter;
 import razesoldier.eqgbot.EVEUser;
 
@@ -50,7 +50,7 @@ public class HandleJoinGroupEvent implements Job, Consumer<MemberJoinRequestEven
 
             Optional<List<EVEUser>> user = EVEUser.newInstance(fromId);
             if (user.isPresent()) {
-                List<EVECharacter> filterCharacters = CharacterFilter.of(user.get()).filterAlliance(562593865);
+                List<EVECharacter> filterCharacters = CharacterAffiliationFilter.of(user.get()).filterAlliance(562593865);
                 if (filterCharacters.isEmpty()) {
                     logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:角色不在主联盟");
                     event.reject(false, "查询不到QQ绑定记录");

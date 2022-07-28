@@ -29,6 +29,7 @@ public class Config {
     private String structureAlertQueueKey;
     private List<Long> structureAlertGroups;
     private List<DMRelayMap> dmRelayList;
+    private Long titanGroup;
 
     @Data
     public static class DatabaseConfig {

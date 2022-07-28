@@ -12,7 +12,7 @@ package razesoldier.eqgbot.feature;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Member;
 import org.jetbrains.annotations.NotNull;
-import razesoldier.eqgbot.CharacterFilter;
+import razesoldier.eqgbot.CharacterAffiliationFilter;
 import razesoldier.eqgbot.EVEUser;
 import razesoldier.eqgbot.dba.SQLExecuteException;
 
@@ -41,7 +41,7 @@ class ExportInvalidPingGroupMembers extends FeatureBase {
             try {
                 Optional<List<EVEUser>> users = EVEUser.newInstance(member.getId());
                 if (users.isPresent()) {
-                    if (CharacterFilter.of(users.get()).filterAlliance(562593865).isEmpty()) {
+                    if (CharacterAffiliationFilter.of(users.get()).filterAlliance(562593865).isEmpty()) {
                         invalidMembers.add(member);
                     }
                 } else {

@@ -26,7 +26,8 @@ public class FeatureRegister {
             "searchEsiUser", SearchEsiUser.class,
             "exportInvalidGroupMembers", ExportInvalidPingGroupMembers.class,
             "structureAlert", StructureAlert.class,
-            "relayDM2Group", RelayDM2Group.class
+            "relayDM2Group", RelayDM2Group.class,
+            "listenJoinTitanGroupRequest", ListenJoinTitanGroupRequest.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -83,6 +84,12 @@ public class FeatureRegister {
         }
         if (classEquals(featureClass, RelayDM2Group.class)) {
             var obj = new RelayDM2Group(bot, config.getDmRelayList());
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+            return;
+        }
+        if (classEquals(featureClass, ListenJoinTitanGroupRequest.class)) {
+            var obj = new ListenJoinTitanGroupRequest(bot, config.getTitanGroup(), logger);
             obj.setEnabled(true);
             featureQueue.add(obj);
         }

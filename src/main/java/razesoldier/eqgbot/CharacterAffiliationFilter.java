@@ -27,23 +27,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CharacterFilter {
+public class CharacterAffiliationFilter {
     private final List<EVECharacter> characters;
 
     @NotNull
     @Contract("_ -> new")
-    public static CharacterFilter of(@NotNull EVEUser eveUser) throws SQLExecuteException {
-        return new CharacterFilter(eveUser.getCharacters());
+    public static CharacterAffiliationFilter of(@NotNull EVEUser eveUser) throws SQLExecuteException {
+        return new CharacterAffiliationFilter(eveUser.getCharacters());
     }
 
     @NotNull
     @Contract("_ -> new")
-    public static CharacterFilter of(@NotNull List<EVEUser> users) throws SQLExecuteException {
+    public static CharacterAffiliationFilter of(@NotNull List<EVEUser> users) throws SQLExecuteException {
         List<EVECharacter> characters = new ArrayList<>();
         for (EVEUser user: users) {
             characters.addAll(user.getCharacters());
         }
-        return new CharacterFilter(characters);
+        return new CharacterAffiliationFilter(characters);
     }
 
     /**

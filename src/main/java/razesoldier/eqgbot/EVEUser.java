@@ -85,7 +85,7 @@ public class EVEUser {
                 preparedStatement.setInt(1, id);
                 ResultSet res = preparedStatement.executeQuery();
                 while (res.next()) {
-                    Integer allianceId = res.getInt("alliance_id") == 0 ? res.getInt("alliance_id") : null;
+                    Integer allianceId = res.getInt("alliance_id") == 0 ? null : res.getInt("alliance_id");
                     list.add(
                             new EVECharacter(this,
                                     res.getInt("id"),

@@ -20,9 +20,11 @@ package razesoldier.eqgbot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
+@ToString
 public class EVECharacter {
     @NonNull private EVEUser user;
     @NonNull private Integer id;
