@@ -59,7 +59,7 @@ public class EVEUser {
                 stat.setLong(1, id);
                 if (allianceIdFilter == null) {
                     var set = stat.executeQuery();
-                    if (set == null) return null;
+                    if (!set.next()) return null;
                     uId = set.getInt("id");
                     name = set.getString("name");
                     corpId = set.getInt("corporation_id");
