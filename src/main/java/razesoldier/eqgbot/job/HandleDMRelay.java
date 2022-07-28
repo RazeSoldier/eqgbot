@@ -28,6 +28,6 @@ public class HandleDMRelay {
         GlobalEventChannel.INSTANCE
                 .filterIsInstance(FriendMessageEvent.class)
                 .filter(event -> event.getSender().getId() == src)
-                .subscribeAlways(FriendMessageEvent.class, event -> bot.getGroupOrFail(dest).sendMessage(event.getMessage()));
+                .subscribeAlways(FriendMessageEvent.class, event -> bot.getGroupOrFail(dest).sendMessage(event.getMessage().contentToString()));
     }
 }
