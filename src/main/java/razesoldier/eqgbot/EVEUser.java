@@ -9,9 +9,10 @@
 
 package razesoldier.eqgbot;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import razesoldier.eqgbot.dba.DatabaseAccessHolding;
 import razesoldier.eqgbot.dba.SQLExecuteException;
 
@@ -19,130 +20,104 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class EVEUser {
+    private final int id;
     private final long qq;
-    private final String name;
-    private final String corpName;
-    private final String allianceName;
-    private final Integer id;
+    private final int mainCharacterId;
+    private List<EVECharacter> characters;
 
-    private EVEUser(long qq, @NotNull String name, @NotNull String corpName, @Nullable String allianceName, Integer id) {
-        this.qq = qq;
-        this.name = name;
-        this.corpName = corpName;
-        this.allianceName = allianceName;
-        this.id = id;
-    }
+    /**
+     * 给定QQ号，在EIMS数据库搜索相关的用户
+     * @param qq QQ号
+     * @return 返回和qq绑定的用户的列表。如果没有匹配的用户则会返回NULL
+     */
+    public static Optional<List<EVEUser>> newInstance(long qq) throws SQLExecuteException {
+        try (Connection conn = getConnection()) {
+            @Language("MySQL") var preSql = """
+                    select u.* from qqs
+                    inner join users u on qqs.user_id = u.id
+                    where qq_id = ?
+                    """;
+            try (PreparedStatement preStat = conn.prepareStatement(preSql)) {
+                preStat.setLong(1, qq);
+                ResultSet res = preStat.executeQuery();
+                List<EVEUser> users = new ArrayList<>();
+                while (res.next()) {
+                    users.add(new EVEUser(res.getInt("id"), qq, res.getInt("main_character_id")));
+                }
+                if (users.isEmpty()) {
+                    // 如果没有结果则直接返回NULL
+                    return Optional.empty();
+                }
+                return Optional.of(users);
+            }
 
-    @Nullable
-    public static EVEUser newInstance(long id, Integer allianceIdFilter) throws SQLExecuteException {
-        try (Connection conn = getConnection(GameServer.GF)) {
-            int uId = 0;
-            String name = null;
-            String corpName;
-            String allianceName = null;
-            int corpId = 0;
-            int allianceId = 0;
-            {
-                // 首先在`qqs`表查询所有与id一样的记录（可能不止一条因为很可能多个用户绑定同一个QQ号）
-                @Language("MySQL") var preSql = """
-                        select characters.id, characters.name, character_affiliations.corporation_id, character_affiliations.alliance_id
-                        from qqs
-                            inner join users on users.id = qqs.user_id
-                            inner join user_characters uc on users.id = uc.user_id
-                            inner join characters on characters.id = uc.character_id
-                            inner join character_affiliations on character_affiliations.character_id = characters.id
-                        where qq_id = ?
-                        """;
-                PreparedStatement stat = conn.prepareStatement(preSql);
-                stat.setLong(1, id);
-                if (allianceIdFilter == null) {
-                    var set = stat.executeQuery();
-                    if (!set.next()) return null;
-                    uId = set.getInt("id");
-                    name = set.getString("name");
-                    corpId = set.getInt("corporation_id");
-                    allianceId = set.getInt("alliance_id");
-                } else {
-                    // 如果设置了allianceIdFilter则遍历上面查询到的记录
-                    // 对比角色的联盟ID和allianceIdFilter
-                    var set = stat.executeQuery();
-                    while (set.next()) {
-                        if (set.getInt("alliance_id") == allianceIdFilter) {
-                            uId = set.getInt("id");
-                            name = set.getString("name");
-                            corpId = set.getInt("corporation_id");
-                            allianceId = set.getInt("alliance_id");
-                        }
-                    }
-                    // 如果在这里uId / name / corpId 都为空说明该QQ号绑定的用户里没有符合allianceIdFilter的用户
-                    if (uId == 0 || name == null || corpId == 0) {
-                        return null;
-                    }
-                }
-            }
-            {
-                ResultSet set = queryFirst(conn, "select name from corporations where id=" + corpId);
-                if (set == null) return null;
-                corpName = set.getString("name");
-            }
-            if (allianceId != 0) {
-                var set = DatabaseAccessHolding.executeQuery(
-                        conn, "select name from alliances where id=" + allianceId
-                );
-                if (set.next()) {
-                    allianceName = set.getString("name");
-                }
-            }
-            return new EVEUser(id, name, corpName, allianceName, uId);
-        } catch (SQLException throwables) {
-            throw new SQLExecuteException(throwables);
+        } catch (SQLException e) {
+            throw new SQLExecuteException(e);
         }
     }
 
-    private static Connection getConnection(GameServer servers) throws SQLException {
-        return DatabaseAccessHolding.getInstance().getConnection(servers);
-    }
-
-    @Nullable
-    private static ResultSet queryFirst(@NotNull Connection connection, @NotNull String sql) throws SQLException {
-        var set = DatabaseAccessHolding.executeQuery(
-                connection, sql
-        );
-        if (!set.next()) {
-            return null;
+    /**
+     * 获得这个用户下的所有已绑定的角色列表
+     */
+    public List<EVECharacter> getCharacters() throws SQLExecuteException {
+        if (characters != null) {
+            return characters;
         }
-        return set;
+        List<EVECharacter> list = new ArrayList<>();
+        try (Connection conn = getConnection()) {
+            @Language("MySQL") var preSql = """
+                    select c.id, c.name, ca.corporation_id, c2.name as 'corp_name', ca.alliance_id, c.name as 'alliance_name'
+                    from user_characters
+                    inner join characters c on c.id = user_characters.character_id
+                    inner join character_affiliations ca on c.id = ca.character_id
+                    inner join corporations c2 on ca.corporation_id = c2.id
+                    left join alliances a on ca.alliance_id = a.id
+                    where user_id = ?
+                    """;
+            try (PreparedStatement preparedStatement = conn.prepareStatement(preSql)) {
+                preparedStatement.setInt(1, id);
+                ResultSet res = preparedStatement.executeQuery();
+                while (res.next()) {
+                    Integer allianceId = res.getInt("alliance_id") == 0 ? res.getInt("alliance_id") : null;
+                    list.add(
+                            new EVECharacter(this,
+                                    res.getInt("id"),
+                                    res.getString("name"),
+                                    res.getInt("corporation_id"),
+                                    res.getString("corp_name"),
+                                    allianceId,
+                                    res.getString("alliance_name")
+                            )
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLExecuteException(e);
+        }
+        characters = list;
+        return characters;
     }
 
-    public long getQq() {
-        return qq;
+    public EVECharacter getMainCharacter() throws SQLExecuteException {
+        if (characters == null) {
+            getCharacters();
+        }
+        for (EVECharacter character: characters) {
+            if (character.getId() == mainCharacterId) {
+                return character;
+            }
+        }
+        throw new RuntimeException("Unable find main character from user: " + id);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getCorpName() {
-        return corpName;
-    }
-
-    public String getAllianceName() {
-        return allianceName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return "EVEUser{" +
-                "qq=" + qq +
-                ", name='" + name + '\'' +
-                ", corpName='" + corpName + '\'' +
-                ", allianceName='" + allianceName + '\'' +
-                '}';
+    private static Connection getConnection() throws SQLException {
+        return DatabaseAccessHolding.getInstance().getConnection(GameServer.GF);
     }
 }

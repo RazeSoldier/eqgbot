@@ -12,6 +12,7 @@ package razesoldier.eqgbot.feature;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Member;
 import org.jetbrains.annotations.NotNull;
+import razesoldier.eqgbot.CharacterFilter;
 import razesoldier.eqgbot.EVEUser;
 import razesoldier.eqgbot.dba.SQLExecuteException;
 
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 class ExportInvalidPingGroupMembers extends FeatureBase {
     private final Bot bot;
@@ -37,8 +39,12 @@ class ExportInvalidPingGroupMembers extends FeatureBase {
         // 遍历群成员列表，检查EVEUser.newInstanceFromGF()的返回值来判断该成员是否应该在这个群
         members.forEach(member -> {
             try {
-                var user = EVEUser.newInstanceFromGF(member.getId(), 562593865);
-                if (user == null) {
+                Optional<List<EVEUser>> users = EVEUser.newInstance(member.getId());
+                if (users.isPresent()) {
+                    if (CharacterFilter.of(users.get()).filterAlliance(562593865).isEmpty()) {
+                        invalidMembers.add(member);
+                    }
+                } else {
                     invalidMembers.add(member);
                 }
             } catch (SQLExecuteException e) {

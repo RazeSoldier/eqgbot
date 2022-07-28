@@ -12,9 +12,12 @@ package razesoldier.eqgbot.job;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent;
 import net.mamoe.mirai.utils.MiraiLogger;
+import razesoldier.eqgbot.CharacterFilter;
+import razesoldier.eqgbot.EVECharacter;
 import razesoldier.eqgbot.EVEUser;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -45,19 +48,21 @@ public class HandleJoinGroupEvent implements Job, Consumer<MemberJoinRequestEven
                 return;
             }
 
-            EVEUser user = EVEUser.newInstanceFromGF(fromId, 562593865);
-            if (user != null) {
-                if (!user.getAllianceName().equals("VENI VIDI VICI")) {
+            Optional<List<EVEUser>> user = EVEUser.newInstance(fromId);
+            if (user.isPresent()) {
+                List<EVECharacter> filterCharacters = CharacterFilter.of(user.get()).filterAlliance(562593865);
+                if (filterCharacters.isEmpty()) {
                     logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:角色不在主联盟");
                     event.reject(false, "查询不到QQ绑定记录");
-                    return;
-                }
-                event.accept(); // 接受请求
-                logger.info(groupId + ": 接受" + fromId + "的入群请求");
-                if (isPingGroup) {
-                    // 并发送“军团-角色名”到群聊
-                    event.getGroup().sendMessage("欢迎加入VVV国服集结群，" +
-                            user.getCorpName() + '-' + user.getName() + "，进群后请屏蔽本机器人");
+                } else {
+                    event.accept(); // 接受请求
+                    logger.info(groupId + ": 接受" + fromId + "的入群请求");
+                    if (isPingGroup) {
+                        // 并发送“军团-角色名”到群聊
+                        EVECharacter mainCharacter = filterCharacters.get(0).getUser().getMainCharacter();
+                        event.getGroup().sendMessage("欢迎加入VVV国服集结群，" +
+                                mainCharacter.getCorporationName() + '-' + mainCharacter.getName() + "，进群后请屏蔽本机器人");
+                    }
                 }
             } else {
                 logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:查询不到QQ绑定记录");
