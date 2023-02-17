@@ -34,8 +34,7 @@ public class Entry {
         @Parameter
         List<String> parameters = new ArrayList<>();
 
-        @Parameter(names = "-d", description = "Path to the device info file", required = true,
-                validateWith = ValidateFile.class)
+        @Parameter(names = "-d", description = "Path to the device info file", required = true)
         String deviceInfoPath;
 
         @Parameter(names = "-c", description = "Path to the config file", required = true,
