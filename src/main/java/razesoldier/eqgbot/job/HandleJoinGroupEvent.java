@@ -57,12 +57,6 @@ public class HandleJoinGroupEvent implements Job, Consumer<MemberJoinRequestEven
                 } else {
                     event.accept(); // 接受请求
                     logger.info(groupId + ": 接受" + fromId + "的入群请求");
-                    if (isPingGroup) {
-                        // 并发送“军团-角色名”到群聊
-                        EVECharacter mainCharacter = filterCharacters.get(0).getUser().getMainCharacter();
-                        event.getGroup().sendMessage("欢迎加入VVV国服集结群，" +
-                                mainCharacter.getCorporationName() + '-' + mainCharacter.getName() + "，进群后请屏蔽本机器人");
-                    }
                 }
             } else {
                 logger.info(groupId + ": 拒绝" + fromId + "的入群请求,原因:查询不到QQ绑定记录");
