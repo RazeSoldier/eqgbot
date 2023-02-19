@@ -16,7 +16,6 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
-import razesoldier.eqgbot.GameServer;
 import razesoldier.eqgbot.dba.DatabaseAccessHolding;
 
 import java.sql.PreparedStatement;
@@ -33,7 +32,7 @@ public class HandleSearchEsiUserCommand extends SimpleListenerHost {
             return;
         }
         String searchText = revMsg.substring(5);
-        try (var conn = DatabaseAccessHolding.getInstance().getConnection(GameServer.GF)) {
+        try (var conn = DatabaseAccessHolding.getInstance().getConnection()) {
             @Language("MySQL") var preSql = """
                     select user_characters.user_id
                     from user_characters

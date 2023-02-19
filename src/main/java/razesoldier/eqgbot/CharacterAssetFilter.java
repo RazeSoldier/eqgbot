@@ -44,7 +44,7 @@ public class CharacterAssetFilter {
      */
     public boolean hasTitan() throws SQLExecuteException {
         List<Integer> ids = characters.stream().map(EVECharacter::getId).toList();
-        try (Connection conn = DatabaseAccessHolding.getInstance().getConnection(GameServer.GF)) {
+        try (Connection conn = DatabaseAccessHolding.getInstance().getConnection()) {
             return queryDatabase(ids, conn);
         } catch (SQLException e) {
             throw new SQLExecuteException(e);

@@ -118,6 +118,6 @@ public class EVEUser {
     }
 
     private static Connection getConnection() throws SQLException {
-        return DatabaseAccessHolding.getInstance().getConnection(GameServer.GF);
+        return DatabaseAccessHolding.getInstance().getConnection();
     }
 }

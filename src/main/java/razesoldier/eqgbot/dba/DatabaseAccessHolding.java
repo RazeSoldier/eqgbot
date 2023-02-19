@@ -14,7 +14,6 @@ import com.mysql.cj.jdbc.MysqlDataSourceFactory;
 import org.apache.commons.lang3.time.TimeZones;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.Config;
-import razesoldier.eqgbot.GameServer;
 
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
@@ -29,27 +28,27 @@ import java.sql.SQLException;
  */
 public class DatabaseAccessHolding {
     private static DatabaseAccessHolding instance;
-    private final DataSource[] dataSources = new DataSource[2];
+    private final DataSource dataSources;
 
-    private DatabaseAccessHolding(Config.DatabaseConfig gfConfig) throws Exception {
+    private DatabaseAccessHolding(@NotNull Config.DatabaseConfig databaseConfig) throws Exception {
         final var className = MysqlDataSource.class.getName();
 
-        var gfConfigRef = new Reference(className);
-        gfConfigRef.add(new StringRefAddr("serverName", gfConfig.getServerName()));
-        gfConfigRef.add(new StringRefAddr("databaseName", gfConfig.getDatabaseName()));
-        gfConfigRef.add(new StringRefAddr("user", gfConfig.getUser()));
-        gfConfigRef.add(new StringRefAddr("password", gfConfig.getPassword()));
-        gfConfigRef.add(new StringRefAddr("serverTimezone", TimeZones.GMT_ID));
-        gfConfigRef.add(new StringRefAddr("characterEncoding", "UTF-8"));
-        dataSources[GameServer.GF.getI()] = (MysqlDataSource) new MysqlDataSourceFactory()
-                .getObjectInstance(gfConfigRef, null, null, null);
+        var configRef = new Reference(className);
+        configRef.add(new StringRefAddr("serverName", databaseConfig.getServerName()));
+        configRef.add(new StringRefAddr("databaseName", databaseConfig.getDatabaseName()));
+        configRef.add(new StringRefAddr("user", databaseConfig.getUser()));
+        configRef.add(new StringRefAddr("password", databaseConfig.getPassword()));
+        configRef.add(new StringRefAddr("serverTimezone", TimeZones.GMT_ID));
+        configRef.add(new StringRefAddr("characterEncoding", "UTF-8"));
+        dataSources = (MysqlDataSource) new MysqlDataSourceFactory()
+                .getObjectInstance(configRef, null, null, null);
     }
 
-    public static void initService(Config.DatabaseConfig gfConfig) throws Exception {
+    public static void initService(Config.DatabaseConfig databaseConfig) throws Exception {
         if (instance != null) {
             throw new RuntimeException("DatabaseAccessHolding service already initialized");
         }
-        instance = new DatabaseAccessHolding(gfConfig);
+        instance = new DatabaseAccessHolding(databaseConfig);
     }
 
     public static DatabaseAccessHolding getInstance() {
@@ -59,8 +58,8 @@ public class DatabaseAccessHolding {
         return instance;
     }
 
-    public Connection getConnection(@NotNull GameServer connType) throws SQLException {
-        return dataSources[connType.getI()].getConnection();
+    public Connection getConnection() throws SQLException {
+        return dataSources.getConnection();
     }
 
     public static ResultSet executeQuery(@NotNull Connection connection, @NotNull String sql) throws SQLException {
