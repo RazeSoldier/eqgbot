@@ -75,7 +75,7 @@ public class HandleJoinGroupEvent implements Job, Consumer<MemberJoinRequestEven
     }
 
     /**
-     * 检查指定的QQ帐号是否存在于{@link HandleJoinGroupEvent#pingGroupList}中
+     * 检查指定的QQ账号是否存在于{@link HandleJoinGroupEvent#pingGroupList}中
      * @return 如果存在返回TRUE，不存在返回FALSE
      */
     private boolean checkAccountIsJoin(Long id) {
