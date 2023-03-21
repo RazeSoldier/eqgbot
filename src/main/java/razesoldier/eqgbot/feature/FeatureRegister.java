@@ -28,7 +28,8 @@ public class FeatureRegister {
             "structureAlert", StructureAlert.class,
             "relayDM2Group", RelayDM2Group.class,
             "listenJoinTitanGroupRequest", ListenJoinTitanGroupRequest.class,
-            "messageBroadcast", MessageBroadcast.class
+            "messageBroadcast", MessageBroadcast.class,
+            "manageYYAdmin", ManageYYAdmin.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -97,6 +98,15 @@ public class FeatureRegister {
         }
         if (classEquals(featureClass, MessageBroadcast.class)) {
             var obj = new MessageBroadcast(bot, config.getMessageBroadcast());
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+            return;
+        }
+        if (classEquals(featureClass, ManageYYAdmin.class)) {
+            if (config.getYyLoginCredential() == null || config.getYyManagedGroup() == null) {
+                return;
+            }
+            var obj = new ManageYYAdmin(bot, config.getYyManagedGroup(), config.getYyLoginCredential());
             obj.setEnabled(true);
             featureQueue.add(obj);
         }

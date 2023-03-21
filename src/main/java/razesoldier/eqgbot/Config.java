@@ -31,6 +31,8 @@ public class Config {
     private List<DMRelayMap> dmRelayList;
     private Long titanGroup;
     private MessageBroadcast messageBroadcast;
+    private YYLoginCredential yyLoginCredential;
+    private Long yyManagedGroup;
 
     @Data
     public static class DatabaseConfig {
@@ -56,5 +58,11 @@ public class Config {
     public static class MessageBroadcast {
         private final long upstream;
         private final List<Long> downstream;
+    }
+
+    @Data
+    public static class YYLoginCredential {
+        private String username;
+        private String password;
     }
 }
