@@ -30,6 +30,7 @@ public class Config {
     private List<Long> structureAlertGroups;
     private List<DMRelayMap> dmRelayList;
     private Long titanGroup;
+    private MessageBroadcast messageBroadcast;
 
     @Data
     public static class DatabaseConfig {
@@ -49,5 +50,11 @@ public class Config {
     public static class DMRelayMap {
         private long src;
         private long dest;
+    }
+
+    @Data
+    public static class MessageBroadcast {
+        private final long upstream;
+        private final List<Long> downstream;
     }
 }
