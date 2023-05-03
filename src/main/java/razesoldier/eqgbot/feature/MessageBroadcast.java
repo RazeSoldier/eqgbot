@@ -40,18 +40,16 @@ public class MessageBroadcast extends FeatureBase {
                 .filterIsInstance(GroupMessageEvent.class)
                 .filter(group -> messageBroadcastConfig.getUpstream() == group.getGroup().getId())
                 .subscribeAlways(GroupMessageEvent.class, groupMessageEvent -> {
-                    messageBroadcastConfig.getDownstream().forEach(downstream -> {
-                        dispatchAction(groupMessageEvent);
-                    });
+                    if (groupMessageEvent.getMessage().contentEquals("怎么用", true)) {
+                        printHelpMessage(groupMessageEvent.getGroup());
+                        return;
+                    }
+                    dispatchAction(groupMessageEvent);
                 });
     }
 
     private void dispatchAction(@NotNull GroupMessageEvent groupMessageEvent) {
         var message = groupMessageEvent.getMessage().contentToString();
-        if (message.equals("怎么用")) {
-            printHelpMessage(groupMessageEvent.getGroup());
-            return;
-        }
 
         if (message.startsWith("通知_")) {
             var messageChainBuilder = new MessageChainBuilder().append("※※※  新通知  ※※※\n")
