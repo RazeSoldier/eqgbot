@@ -27,7 +27,8 @@ public class FeatureRegister {
             "exportInvalidGroupMembers", ExportInvalidPingGroupMembers.class,
             "structureAlert", StructureAlert.class,
             "relayDM2Group", RelayDM2Group.class,
-            "listenJoinTitanGroupRequest", ListenJoinTitanGroupRequest.class
+            "listenJoinTitanGroupRequest", ListenJoinTitanGroupRequest.class,
+            "messageBroadcast", MessageBroadcast.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -90,6 +91,12 @@ public class FeatureRegister {
         }
         if (classEquals(featureClass, ListenJoinTitanGroupRequest.class)) {
             var obj = new ListenJoinTitanGroupRequest(bot, config.getTitanGroup(), logger);
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+            return;
+        }
+        if (classEquals(featureClass, MessageBroadcast.class)) {
+            var obj = new MessageBroadcast(bot, config.getMessageBroadcast());
             obj.setEnabled(true);
             featureQueue.add(obj);
         }
