@@ -18,7 +18,7 @@ repositories {
 dependencies {
     {
         // mirai https://github.com/mamoe/mirai
-        var miraiVersion = "2.14.0"
+        var miraiVersion = "2.15.0-M1"
         api("net.mamoe:mirai-core-api:" + miraiVersion) // 编译代码使用
         runtimeOnly("net.mamoe:mirai-core:" + miraiVersion) // 运行时使用
     }
