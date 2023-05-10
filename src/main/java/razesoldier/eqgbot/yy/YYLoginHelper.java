@@ -40,31 +40,36 @@ public class YYLoginHelper {
     @NotNull
     public static String attemptLoginWithSelenium(Config.YYLoginCredential yyLoginCredential) {
         ChromeDriver chromeDriver = new ChromeDriver(new ChromeOptions().addArguments("--headless", "--no-sandbox"));
-        chromeDriver.get("https://channel.yy.com");
-        chromeDriver.switchTo().frame("udbsdk_frm_normal");
-        // 等待登录悬浮框弹出
-        new WebDriverWait(chromeDriver, Duration.ofSeconds(5)).until(driver -> driver.findElement(By.className("m_commonLogin")));
-        if (chromeDriver.findElement(By.className("qnotice")).getText().equals("检测到您登录的YY客户端或YY浏览器帐号")) {
-            // 当网页检测到本机有YY客户端正在运行可能会显示提示
-            // 使用xpath找到“使用账号密码登录”链接并点击
-            chromeDriver.findElement(By.linkText("使用帐号密码登录")).click();
+        String cookies;
+        try {
+            chromeDriver.get("https://channel.yy.com");
+            chromeDriver.switchTo().frame("udbsdk_frm_normal");
+            // 等待登录悬浮框弹出
+            new WebDriverWait(chromeDriver, Duration.ofSeconds(5)).until(driver -> driver.findElement(By.className("m_commonLogin")));
+            if (chromeDriver.findElement(By.className("qnotice")).getText().equals("检测到您登录的YY客户端或YY浏览器帐号")) {
+                // 当网页检测到本机有YY客户端正在运行可能会显示提示
+                // 使用xpath找到“使用账号密码登录”链接并点击
+                chromeDriver.findElement(By.linkText("使用帐号密码登录")).click();
+            }
+
+            var accountInput = new WebDriverWait(chromeDriver, Duration.ofSeconds(10))
+                    .until(driver -> driver.findElement(By.className("E_acct")));
+            try {
+                // 休眠当前线程500ms，用来防止输入框不可交互
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new YYLoginRuntimeException(e);
+            }
+            accountInput.sendKeys(yyLoginCredential.getUsername());
+            chromeDriver.findElement(By.className("E_passwd")).sendKeys(yyLoginCredential.getPassword() + "\n");
+            // 显式等待YY欢迎页面，超时设置为10秒
+            new WebDriverWait(chromeDriver, Duration.ofSeconds(10)).until(driver -> driver.getTitle().equals("YY公会管理 - 欢迎您"));
+            cookies = getCookieText(chromeDriver.manage().getCookies());
+        } finally {
+            chromeDriver.quit();
         }
 
-        var accountInput = new WebDriverWait(chromeDriver, Duration.ofSeconds(10))
-                .until(driver -> driver.findElement(By.className("E_acct")));
-        try {
-            // 休眠当前线程500ms，用来防止输入框不可交互
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new YYLoginRuntimeException(e);
-        }
-        accountInput.sendKeys(yyLoginCredential.getUsername());
-        chromeDriver.findElement(By.className("E_passwd")).sendKeys(yyLoginCredential.getPassword() + "\n");
-        // 显式等待YY欢迎页面，超时设置为10秒
-        new WebDriverWait(chromeDriver, Duration.ofSeconds(10)).until(driver -> driver.getTitle().equals("YY公会管理 - 欢迎您"));
-        var cookies = getCookieText(chromeDriver.manage().getCookies());
-        chromeDriver.quit();
         return cookies;
     }
 
