@@ -33,6 +33,8 @@ public class Config {
     private MessageBroadcast messageBroadcast;
     private YYLoginCredential yyLoginCredential;
     private Long yyManagedGroup;
+    private String loginMethod;
+    private String loginProtocol = "watch";
 
     @Data
     public static class DatabaseConfig {

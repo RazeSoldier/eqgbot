@@ -11,6 +11,7 @@ package razesoldier.eqgbot;
 
 import com.alibaba.fastjson2.JSON;
 import net.mamoe.mirai.BotFactory;
+import net.mamoe.mirai.auth.BotAuthorization;
 import net.mamoe.mirai.utils.BotConfiguration;
 import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
@@ -41,8 +42,7 @@ class Bot {
     }
 
     public void run() throws IOException {
-        final var account = config.getAccount();
-        net.mamoe.mirai.Bot bot = BotFactory.INSTANCE.newBot(account.getId(), account.getPassword(), getBotConfig());
+        net.mamoe.mirai.Bot bot = new MiraiBotBuilder(config, deviceInfoPath).build();
 
         MiraiLogger logger = new Logger(new File(System.getProperty("user.dir") + "/eqgbot.log"));
         FeatureRegister featureRegister = new FeatureRegister(bot, logger, config);
@@ -60,18 +60,54 @@ class Bot {
         }
     }
 
-    @NotNull
-    private BotConfiguration getBotConfig() {
-        var botConfig = new BotConfiguration();
-        botConfig.fileBasedDeviceInfo(deviceInfoPath);
-        botConfig.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PAD);
-        return botConfig;
-    }
-
     /**
      * 如果没有命令行参数，则说明以守护进程运行
      */
     private boolean isDaemon() {
         return this.cliParameters.isEmpty();
+    }
+
+    private static class MiraiBotBuilder {
+        private final Config config;
+        private final String deviceInfoPath;
+
+        MiraiBotBuilder(Config config, String deviceInfoPath) {
+            this.config = config;
+            this.deviceInfoPath = deviceInfoPath;
+        }
+
+        @NotNull
+        net.mamoe.mirai.Bot build() {
+            return BotFactory.INSTANCE.newBot(config.getAccount().getId(), buildBotAuth(), buildBotConfig());
+        }
+
+        @NotNull
+        private BotAuthorization buildBotAuth() {
+            BotAuthorization botAuthorization;
+            String loginMethod = config.getLoginMethod();
+            // 默认使用密码登录
+            if (loginMethod != null && loginMethod.equals("qrcode")) {
+                botAuthorization = BotAuthorization.byQRCode();
+            } else {
+                botAuthorization = BotAuthorization.byPassword(config.getAccount().getPassword());
+            }
+            return botAuthorization;
+        }
+
+        @NotNull
+        private BotConfiguration buildBotConfig() {
+            var botConfig = new BotConfiguration();
+            botConfig.fileBasedDeviceInfo(deviceInfoPath);
+            // 默认使用手表协议
+            BotConfiguration.MiraiProtocol protocol = switch (config.getLoginProtocol()) {
+                case "pad" -> BotConfiguration.MiraiProtocol.ANDROID_PAD;
+                case "phone" -> BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+                case "ipad" -> BotConfiguration.MiraiProtocol.IPAD;
+                case "macos" -> BotConfiguration.MiraiProtocol.MACOS;
+                default -> BotConfiguration.MiraiProtocol.ANDROID_WATCH;
+            };
+            botConfig.setProtocol(protocol);
+            return botConfig;
+        }
     }
 }
