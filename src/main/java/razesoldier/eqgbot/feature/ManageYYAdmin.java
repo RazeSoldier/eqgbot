@@ -76,6 +76,8 @@ class ManageYYAdmin extends FeatureBase {
             var accountOptional = yyClient.getAccountByYYId(longOptional.get());
             if (accountOptional.isPresent()) {
                 return Optional.of(new AssignAdminAction(yyClient).handle(accountOptional.get()));
+            } else {
+                return Optional.of(YYOperationResult.newMissingUser(longOptional.get()));
             }
         }
         return Optional.empty();

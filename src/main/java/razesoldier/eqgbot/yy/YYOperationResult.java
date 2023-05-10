@@ -35,6 +35,12 @@ public class YYOperationResult {
         return new YYOperationResult(false, yyAccount, message);
     }
 
+    @NotNull
+    @Contract("_ -> new")
+    public static YYOperationResult newMissingUser(Long uid) {
+        return new YYOperationResult(false, null, String.format("未能找到%s用户，可能是没有给马甲？？？", uid));
+    }
+
     @Override
     public String toString() {
         return message;
