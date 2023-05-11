@@ -23,11 +23,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 public class MessageBroadcast extends FeatureBase {
     private final Bot bot;
     private final Config.MessageBroadcast messageBroadcastConfig;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private static final DateTimeFormatter SRP_CODE_FOREMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
     public MessageBroadcast(Bot bot, Config.MessageBroadcast messageBroadcastConfig) {
         this.bot = bot;
@@ -49,35 +51,55 @@ public class MessageBroadcast extends FeatureBase {
     }
 
     private void dispatchAction(@NotNull GroupMessageEvent groupMessageEvent) {
-        var message = groupMessageEvent.getMessage().contentToString();
+        LocalDateTime now = LocalDateTime.now();
+        String sender = groupMessageEvent.getSender().getNameCard();
 
-        if (message.startsWith("通知_")) {
-            var messageChainBuilder = new MessageChainBuilder().append("※※※  新通知  ※※※\n")
-                    .append(LocalDateTime.now().format(DATE_FORMAT))
-                    .append("\n发送者：")
-                    .append(groupMessageEvent.getSender().getNameCard())
-                    .append("\n\n");
-            // 用来替换第一行的命令——“通知_”
-            AtomicBoolean isFirstLine = new AtomicBoolean(true);
-            groupMessageEvent.getMessage()
-                    .forEach(singleMessage -> {
-                        if (singleMessage instanceof PlainText text) {
-                            var textContent = text.getContent();
-                            if (isFirstLine.get()) {
-                                textContent = textContent.replaceFirst("通知_", "");
-                                isFirstLine.set(false); // 只替换一次
-                            }
-                            messageChainBuilder.add(textContent);
-                        } else if (singleMessage instanceof Image image) {
-                            messageChainBuilder.add(image);
-                        }
-                    });
+        handleCommandIfMatch(groupMessageEvent, "通知_", () ->
+                new MessageChainBuilder().append("※※※  新通知  ※※※\n")
+                        .append(now.format(DATE_FORMAT))
+                        .append("\n发送者：").append(sender)
+                        .append("\n\n")
+        );
+
+        handleCommandIfMatch(groupMessageEvent, "集结_", () ->
+                new MessageChainBuilder().append("※※※  集结啦  ※※※\n")
+                        .append(now.format(DATE_FORMAT))
+                        .append("\n发送者：").append(sender)
+                        .append("\n计次：是")
+                        .append("\n补损码：").append(now.format(SRP_CODE_FOREMAT)).append(sender)
+                        .append("\n\n")
+        );
+    }
+
+    private void handleCommandIfMatch(@NotNull GroupMessageEvent groupMessageEvent, String command, Supplier<MessageChainBuilder> supplier) {
+        var message = groupMessageEvent.getMessage().contentToString();
+        if (message.startsWith(command)) {
+            MessageChainBuilder messageChainBuilder = supplier.get();
+            appendMessageStuff(groupMessageEvent, messageChainBuilder, command);
             sendMessageToDownstream(messageChainBuilder.build());
         }
     }
 
+    private static void appendMessageStuff(@NotNull GroupMessageEvent groupMessageEvent, MessageChainBuilder messageChainBuilder, String regex) {
+        // 用来替换第一行的命令
+        AtomicBoolean isFirstLine = new AtomicBoolean(true);
+        groupMessageEvent.getMessage()
+                .forEach(singleMessage -> {
+                    if (singleMessage instanceof PlainText text) {
+                        var textContent = text.getContent();
+                        if (isFirstLine.get()) {
+                            textContent = textContent.replaceFirst(regex, "");
+                            isFirstLine.set(false); // 只替换一次
+                        }
+                        messageChainBuilder.add(textContent);
+                    } else if (singleMessage instanceof Image image) {
+                        messageChainBuilder.add(image);
+                    }
+                });
+    }
+
     private void printHelpMessage(@NotNull Group upstream) {
-        upstream.sendMessage("通知_通知内容");
+        upstream.sendMessage("通知_通知内容\n集结_集结内容");
     }
 
     private void sendMessageToDownstream(MessageChain messageChain) {
