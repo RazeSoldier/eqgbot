@@ -46,6 +46,10 @@ public class MessageBroadcast extends FeatureBase {
                         printHelpMessage(groupMessageEvent.getGroup());
                         return;
                     }
+                    if (groupMessageEvent.getMessage().contentEquals("ping", true)) {
+                        printPong(groupMessageEvent.getGroup());
+                        return;
+                    }
                     dispatchAction(groupMessageEvent);
                 });
     }
@@ -100,6 +104,10 @@ public class MessageBroadcast extends FeatureBase {
 
     private void printHelpMessage(@NotNull Group upstream) {
         upstream.sendMessage("通知_通知内容\n集结_集结内容");
+    }
+
+    private void printPong(@NotNull Group upstream) {
+        upstream.sendMessage("pong");
     }
 
     private void sendMessageToDownstream(MessageChain messageChain) {
