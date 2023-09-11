@@ -17,6 +17,7 @@ import net.mamoe.mirai.utils.MiraiLogger;
 import org.jetbrains.annotations.NotNull;
 import razesoldier.eqgbot.dba.DatabaseAccessHolding;
 import razesoldier.eqgbot.feature.FeatureRegister;
+import xyz.cssxsh.mirai.tool.FixProtocolVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,7 @@ class Bot {
 
     public void run() throws IOException {
         net.mamoe.mirai.Bot bot = new MiraiBotBuilder(config, deviceInfoPath).build();
+        FixProtocolVersion.fetch(BotConfiguration.MiraiProtocol.ANDROID_PAD, "8.9.63");
 
         MiraiLogger logger = new Logger(new File(System.getProperty("user.dir") + "/eqgbot.log"));
         FeatureRegister featureRegister = new FeatureRegister(bot, logger, config);
