@@ -18,10 +18,12 @@ repositories {
 dependencies {
     {
         // mirai https://github.com/mamoe/mirai
-        var miraiVersion = "2.15.0-M1"
+        var miraiVersion = "2.15.0"
         api("net.mamoe:mirai-core-api:" + miraiVersion) // 编译代码使用
         runtimeOnly("net.mamoe:mirai-core:" + miraiVersion) // 运行时使用
     }
+    implementation fileTree('libs')
+    implementation 'org.asynchttpclient:async-http-client:2.12.3' // libs/fix-protocol-version依赖这个库
     implementation('mysql:mysql-connector-java:8.0.32') // https://github.com/mysql/mysql-connector-j
     implementation('com.beust:jcommander:1.82')
     implementation('io.timeandspace:cron-scheduler:0.1') // https://github.com/TimeAndSpaceIO/CronScheduler
