@@ -130,7 +130,8 @@ class AdminCommandListener extends FeatureBase {
         private void handleEveUsers(@NotNull List<EVEUser> eveUsers, long qq) throws SQLExecuteException {
             for (EVEUser eveUser : eveUsers) {
                 EVECharacter mainCharacter = eveUser.getMainCharacter();
-                csvExporter.addRow(List.of(String.valueOf(qq), mainCharacter.getName(), mainCharacter.getCorporationName(), mainCharacter.getAllianceName()));
+                var allianceName = mainCharacter.getAllianceName() != null ? mainCharacter.getAllianceName() : ""; // 预处理防止NPE
+                csvExporter.addRow(List.of(String.valueOf(qq), mainCharacter.getName(), mainCharacter.getCorporationName(), allianceName));
             }
         }
 
