@@ -73,7 +73,7 @@ public class EVEUser {
         List<EVECharacter> list = new ArrayList<>();
         try (Connection conn = getConnection()) {
             @Language("MySQL") var preSql = """
-                    select c.id, c.name, ca.corporation_id, c2.name as 'corp_name', ca.alliance_id, c.name as 'alliance_name'
+                    select c.id, c.name, ca.corporation_id, c2.name as 'corp_name', ca.alliance_id, a.name as 'alliance_name'
                     from user_characters
                     inner join characters c on c.id = user_characters.character_id
                     inner join character_affiliations ca on c.id = ca.character_id
