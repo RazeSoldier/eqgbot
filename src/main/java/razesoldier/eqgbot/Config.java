@@ -35,6 +35,7 @@ public class Config {
     private Long yyManagedGroup;
     private String loginMethod;
     private String loginProtocol = "watch";
+    private Long adminGroup;
 
     @Data
     public static class DatabaseConfig {

@@ -29,7 +29,8 @@ public class FeatureRegister {
             "relayDM2Group", RelayDM2Group.class,
             "listenJoinTitanGroupRequest", ListenJoinTitanGroupRequest.class,
             "messageBroadcast", MessageBroadcast.class,
-            "manageYYAdmin", ManageYYAdmin.class
+            "manageYYAdmin", ManageYYAdmin.class,
+            "listenAdminGroup", AdminCommandListener.class
     );
     private static final List<Feature> featureQueue = new ArrayList<>();
     private final Bot bot;
@@ -107,6 +108,15 @@ public class FeatureRegister {
                 return;
             }
             var obj = new ManageYYAdmin(bot, config.getYyManagedGroup(), config.getYyLoginCredential());
+            obj.setEnabled(true);
+            featureQueue.add(obj);
+            return;
+        }
+        if (classEquals(featureClass, AdminCommandListener.class)) {
+            if (config.getAdminGroup() == null) {
+                return;
+            }
+            var obj = new AdminCommandListener(bot, config.getAdminGroup());
             obj.setEnabled(true);
             featureQueue.add(obj);
         }
