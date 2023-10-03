@@ -81,7 +81,7 @@ class AdminCommandListener extends FeatureBase {
         }
 
         try {
-            log.info("Start check group: " + currentGroup.getId());
+            log.info("Start check group: " + targetGroup.getId());
             CSVExporter csvExporter = new GroupEsiChecker(targetGroup).handle();
             log.info("Check finished");
             var filename = "check_group_result-" + Instant.now().getEpochSecond() + ".csv";
