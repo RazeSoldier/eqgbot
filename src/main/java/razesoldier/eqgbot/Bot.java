@@ -44,7 +44,7 @@ class Bot {
 
     public void run() throws IOException {
         net.mamoe.mirai.Bot bot = new MiraiBotBuilder(config, deviceInfoPath).build();
-        FixProtocolVersion.fetch(BotConfiguration.MiraiProtocol.ANDROID_PAD, "8.9.63");
+        FixProtocolVersion.load(BotConfiguration.MiraiProtocol.ANDROID_PAD);
 
         MiraiLogger logger = new Logger(new File(System.getProperty("user.dir") + "/eqgbot.log"));
         FeatureRegister featureRegister = new FeatureRegister(bot, logger, config);
