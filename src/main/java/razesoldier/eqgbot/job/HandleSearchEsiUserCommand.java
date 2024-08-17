@@ -14,11 +14,14 @@ import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.MessageChain;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
+import razesoldier.eqgbot.AllianceBlacklistFilter;
 import razesoldier.eqgbot.dba.DatabaseAccessHolding;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -34,7 +37,7 @@ public class HandleSearchEsiUserCommand extends SimpleListenerHost {
         String searchText = revMsg.substring(5);
         try (var conn = DatabaseAccessHolding.getInstance().getConnection()) {
             @Language("MySQL") var preSql = """
-                    select user_characters.user_id
+                    select c.id as `id`
                     from user_characters
                             inner join characters c on user_characters.character_id = c.id
                             inner join tokens on tokens.character_id = c.id
@@ -54,13 +57,22 @@ public class HandleSearchEsiUserCommand extends SimpleListenerHost {
                                                            'esi-location.read_online.v1'
                     ))
                     """;
-            PreparedStatement stat = conn.prepareStatement(preSql);
-            stat.setString(1, searchText);
-            var res = stat.executeQuery();
-            if (res.next()) {
-                event.getGroup().sendMessage(new At(event.getSender().getId()).plus(searchText).plus(" 已注册EIMS"));
-            } else {
-                event.getGroup().sendMessage(new At(event.getSender().getId()).plus(searchText).plus(" 尚未注册EIMS"));
+            ResultSet res;
+            try (PreparedStatement stat = conn.prepareStatement(preSql)) {
+                stat.setString(1, searchText);
+                res = stat.executeQuery();
+
+                MessageChain msgChain = new At(event.getSender().getId()).plus(searchText);
+                if (res.next()) {
+                    // 检查是否在联盟黑名单内
+                    if (new AllianceBlacklistFilter().filter(res.getInt("id"))) {
+                        event.getGroup().sendMessage(msgChain.plus(" 联盟黑名单内"));
+                    } else {
+                        event.getGroup().sendMessage(msgChain.plus(" 已注册EIMS"));
+                    }
+                } else {
+                    event.getGroup().sendMessage(msgChain.plus(" 尚未注册EIMS"));
+                }
             }
         } catch (SQLException e) {
             event.getGroup().sendMessage(e.toString());
@@ -68,6 +80,7 @@ public class HandleSearchEsiUserCommand extends SimpleListenerHost {
         }
     }
 
+    @Override
     public void  handleException(@NotNull CoroutineContext context, @NotNull Throwable exception) {
         super.handleException(context, exception);
     }
